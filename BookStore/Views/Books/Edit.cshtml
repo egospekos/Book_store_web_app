@@ -1,0 +1,43 @@
+﻿@using Entity_Layer
+@model Books
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<h1>Edit</h1>
+
+<form>
+    <label>Name</label><br />
+    <input type="text" value=@Model.bookName id ="getName"/><br />
+    <label>Pages</label><br />
+    <input type="text" value=@Model.bookPages id ="getPage"/><br />
+    <label>Price</label><br />
+    <input type="text" value=@Model.bookPrice id ="getPrice"/><br />
+    <label>Author</label><br />
+    <select id ="authorSelect"></select><br />
+    <label>Category</label><br />
+    <select id ="categorySelect"></select><br />
+</form>
+<button class="btn-primary btn-primary" id="edit_button">Submit</button>
+
+<script>
+    $(function(){
+        $("#edit_button").click(function(){
+            var obj={};
+            obj.bookName = $("#getName").val();
+            obj.bookPages = $("#getPage").val();
+            obj.bookPrice = $("#getPrice").val();
+            obj.bookAuthorID = $("#authorSelect").val();
+            obj.categoryIDs = $("#categorySelect").val();
+            $.ajax({
+                url:"/Books/Edit",
+                type:"POST",
+                data:obj
+            }).done(function(data){
+                alert("success");
+            });
+        });
+    });
+</script>

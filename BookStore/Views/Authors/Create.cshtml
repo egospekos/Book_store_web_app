@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<form class="form-group">
+    <input type="text" class="form-control" placeholder="Name" id="authorName"/>
+    <input type="date" class="form-control" placeholder="Birthday" id="authorBday"/>
+    <button id = "authorAdd" class="btn btn-primary">Add</button>
+</form>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(function(){
+        $("#authorAdd").click(function(){
+            var obj = {};
+            obj.authorName = $("#authorName").val();
+            obj.authorBday = $("#authorBday").val();
+            $.ajax({
+                url: "/Authors/Create",
+                type: "POST",
+                data: obj
+            }).done(function (data){
+                alert("success");
+            });
+        });
+    });
+</script>
+

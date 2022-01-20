@@ -1,0 +1,104 @@
+﻿@using Entity_Layer
+@model List<Categories>
+@{
+    Layout = null;
+}
+
+
+<h1>Category Listeleme</h1>
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Categories</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+    $(document).ready( function () {
+    $('#categoryTable').DataTable({
+        columnDefs: [
+            {
+            targets: ["nosort"],
+            orderable: false
+            }
+        ]
+    });
+    } );
+
+
+    
+    </script>
+</head>
+<body>
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="nosort">Books</th>
+                <th class="nosort">Edit</th>
+                <th class="nosort">Delete</th>
+            </tr> 
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.categoryName</td>
+                    <td><button type="button" onclick="LoadCategoryBooks(@item.categoryID)">Books</button></td>
+                    <td><a href="/Categories/Edit/@item.categoryID" class="btn btn-warning">Edit</a></td>
+                    <td><a href="/Categories/Delete/@item.categoryID" class="btn btn-danger">Delete</a></td>
+                </tr>
+            }
+        
+            
+            
+        </tbody>
+    </table>
+    <a href="/Categories/Create" class="btn btn-light">Add Category</a>
+
+
+<div id="categoryBooksModal" class="modal">
+  <div class="modal-content">
+    @Html.Partial("PartialShowBooks")
+  </div>
+</div>
+
+
+
+</body>
+
+<script>
+
+    var categoryM = document.getElementById("categoryBooksModal");
+    //
+    window.onclick = function (event){
+        if(event.target==categoryM){
+            categoryM.style.display = "none";
+        }
+    }
+
+
+    //
+    function LoadCategoryBooks(ID){
+        obj={};
+        $.ajax({
+            url: "/Categories/GetCategoryBooks/"+ID,
+            type: "GET",
+            data: obj
+        }).done(function (data){
+            console.log(data);
+            for(var i=0;i<data.length;i++){
+                $("#categoryBookTable tbody").append("<tr><td>"+data[i].bookName+"<td><td>"+data[i].bookPages+"<td><td>"+data[i].bookPrice+"<td><td>"+data[i].authorName+"<td><tr>");
+            }
+
+        });
+        categoryM.style.display = "block";
+    }
+</script>
+
+</html>

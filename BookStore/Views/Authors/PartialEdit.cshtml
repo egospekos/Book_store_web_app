@@ -1,0 +1,31 @@
+﻿
+
+<h1>Edit</h1>
+
+<form class="form-group">
+    <label>Name</label><br />
+    <input type="text" id ="getName"/><br />
+    <label>Birthday</label><br />
+    <input type="date" id ="getBday"/><br />
+    <input type="hidden" id ="getID"/>
+</form>
+<button class="btn-primary btn-primary" id="edit_button">Submit</button>
+
+
+<script>
+    $(function(){
+        $("#edit_button").click(function(){
+            var obj={};
+            obj.authorName = $("#getName").val();
+            obj.authorID = $("#getID").val();
+            obj.authorBday = $("#getBday").val();
+            $.ajax({
+                url:"/Authors/Edit",
+                type:"POST",
+                data:obj
+            }).done(function(data){
+                alert("success");
+            });
+        });
+    });
+</script>

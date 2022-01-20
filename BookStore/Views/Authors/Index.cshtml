@@ -1,0 +1,151 @@
+﻿@using Entity_Layer
+@model List<Authors>
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Books</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <script>
+    $(document).ready( function () {
+    $('#authorTable').DataTable({
+        order: [[ 0, "asc" ]],
+        columnDefs: [
+            {
+            targets: ["nosort"],
+            orderable: false
+            }
+        ]
+    });
+    } );
+
+
+    
+    </script>
+</head>
+<body>
+    
+    <table id="authorTable">
+        <thead>
+            <tr>
+                <th class="">ID</th>
+                <th>Name</th>
+                <th>Birthday</th>
+                <th>Books</th>
+                <th class="nosort">Edit</th>
+                <th class="nosort">Delete</th>
+                
+            </tr> 
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            
+                <tr>
+                    <td class="">@item.authorID</td>
+                    <td>@item.authorName</td>
+                    <td>@item.authorBday</td>
+                    <td><button type="button" onclick="LoadAuthorBooks(@item.authorID)">@item.countBook</button></td>
+                    <td><button type="button" class="btn btn-warning" onclick="editID(@item.authorID,'@item.authorName')">Edit</button></td>
+                    <td><a href="/Authors/Delete/@item.authorID" class="btn btn-danger">Delete</a></td>
+                </tr>
+        
+            }
+            
+        </tbody>
+    </table>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <button class="btn btn-primary" id="modalButton_add" onclick="addButtonClick()">Add Author</button>
+    </div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+    @Html.Partial("PartialEdit")
+  </div>
+</div>
+
+<div id="addModal" class="modal">
+  <div class="modal-content">
+    @Html.Partial("PartialCreate")
+  </div>
+</div>
+
+<div id="booksModal" class="modal">
+  <div class="modal-content">
+    @Html.Partial("PartialShowbooks")
+  </div>
+</div>
+
+
+</body>
+
+
+<script>
+    var editM = document.getElementById("editModal");
+    var addM = document.getElementById("addModal");
+    var booksM = document.getElementById("booksModal");
+    function editID(ID,authorName){
+        $("#getID").val(ID);
+        $("#getName").val(authorName);
+        editM.style.display = "block";
+    
+    
+    }
+
+    //
+    function addButtonClick(){
+        addM.style.display = "block";
+    }
+    //
+
+    window.onclick = function(event) {
+      
+      if (event.target == editM) {
+        editM.style.display = "none";
+      }
+      else if (event.target == addM) {
+        addM.style.display = "none";
+      }
+      else if (event.target == booksM) {
+        booksM.style.display = "none";
+      }
+    }
+   
+    
+    //
+
+    function LoadAuthorBooks(ID){
+        obj={};
+        $.ajax({
+            url: "/Authors/GetBooks/"+ID,
+            type: "GET",
+            data: obj
+        }).done(function (data){
+            console.log(data);
+            for(var i=0;i<data.length;i++){
+                $("#bookTable tbody").append("<tr><td>"+data[i].bookName+"<td><td>"+data[i].bookPages+"<td><td>"+data[i].bookPrice+"<td><tr>");
+            }
+
+        });
+        booksM.style.display = "block";
+    }
+
+    //
+
+
+</script>
+
+
+
+</html>
+
+
