@@ -5,7 +5,7 @@ By database first method as a first step four tables has been made.
 Main focus is list tables  pages and doing CRUD operations on cshtml pages.
 
 
-Database -> MSSQL
+Database -> MSSQL <br>
 Controllers -> C#
 ORM -> Dapper
 Front-end -> bootstrap 5 / javascript (jquery,chart.js,selectize.js) / datatables
