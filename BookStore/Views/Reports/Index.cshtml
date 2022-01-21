@@ -8,36 +8,49 @@
 
 <canvas id="chartCategory"></canvas>
 
+  
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
-  const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
+    $(function(){
+        createBookAuthorChart();
+    });
 
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-  };
 
-  const config = {
-    type: 'line',
-    data: data,
-    options: {}
-  };
-</script>
+    function createBookAuthorChart() {
+        $.ajax({
+            url: "/Reports/GetFirstChart"
+        }).done(function (data) {
+            console.log(data)
+            var categories = [];
+            var sums = [];
+            for (var i = 0; i < data.length; i++) {
+                categories.push(data[i].categoryName);
+                sums.push(data[i].sumCategory);
+            }
+            var catCanvas = document.getElementById('chartCategory');
+            var catChart = new Chart(catCanvas, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Categories',
+                        data: sums,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                },
+            });
+        });
+    }
 
-<script>
-  const myChart = new Chart(
-    document.getElementById('chartCategory'),
-    config
-  );
+
 </script>

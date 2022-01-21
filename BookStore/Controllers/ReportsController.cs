@@ -23,86 +23,21 @@ namespace BookStore.Controllers
 		// GET: ReportsController
 		public ActionResult Index()
 		{
-			List<BookCategories> b_categories;
-			using(IDbConnection db = getConnection())
-			{
-				String _query = "SELECT categoryID,COUNT(*) AS sumCategory FROM [BookCategories] GROUP BY categoryID";
-				b_categories = db.Query<BookCategories>(_query).ToList();
-			}
-			var categories = b_categories.Select(c => c.categoryID);
-			var categoriesSum = b_categories.Select(c => c.sumCategory);
-			ViewBag.CATEGORIES = categories;
-			ViewBag.SUM = categoriesSum;
+			
+			
 			return View();
 		}
 
-		// GET: ReportsController/Details/5
-		public ActionResult Details(int id)
+		public List<Categories> GetFirstChart()
 		{
-			return View();
+			List<Categories> categoriesNumber;
+			using (IDbConnection db = getConnection())
+			{
+				String _query = "SELECT [Categories].[categoryName],COUNT(*) AS sumCategory FROM Categories LEFT JOIN [BookCategories] ON [Categories].[categoryID] = [BookCategories].[categoryID] GROUP BY [Categories].[categoryName]";
+				categoriesNumber = db.Query<Categories>(_query).ToList();
+			}
+			return categoriesNumber;
 		}
 
-		// GET: ReportsController/Create
-		public ActionResult Create()
-		{
-			return View();
-		}
-
-		// POST: ReportsController/Create
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Create(IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		// GET: ReportsController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			return View();
-		}
-
-		// POST: ReportsController/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		// GET: ReportsController/Delete/5
-		public ActionResult Delete(int id)
-		{
-			return View();
-		}
-
-		// POST: ReportsController/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
 	}
 }

@@ -11,5 +11,7 @@ namespace Entity_Layer
 		public int categoryID { get; set; }
 		public string categoryName { get; set; }
 		public ICollection<Books> books { get; set; }
+
+		public int sumCategory { get; set; }
 	}
 }
