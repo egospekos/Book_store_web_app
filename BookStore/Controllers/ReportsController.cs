@@ -39,5 +39,16 @@ namespace BookStore.Controllers
 			return categoriesNumber;
 		}
 
+		public List<Authors> GetSecondChart()
+		{
+			List<Authors> a;
+			using (IDbConnection db = getConnection())
+			{
+				String _query = "SELECT [Authors].[authorName],COUNT(*) AS countBook FROM [Authors] LEFT JOIN [Books] ON [Authors].[authorID]=[Books].[bookAuthorID] GROUP BY [Authors].[authorName]";
+				a = db.Query<Authors>(_query).ToList();
+			}
+			return a;
+		}
+
 	}
 }

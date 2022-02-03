@@ -40,8 +40,7 @@
             <tr>
                 <th>Name</th>
                 <th class="nosort">Books</th>
-                <th class="nosort">Edit</th>
-                <th class="nosort">Delete</th>
+                <th class="nosort">Actions</th>
             </tr> 
         </thead>
         <tbody>
@@ -50,8 +49,11 @@
                 <tr>
                     <td>@item.categoryName</td>
                     <td><button type="button" onclick="LoadCategoryBooks(@item.categoryID)">Books</button></td>
-                    <td><a href="/Categories/Edit/@item.categoryID" class="btn btn-warning">Edit</a></td>
-                    <td><a href="/Categories/Delete/@item.categoryID" class="btn btn-danger">Delete</a></td>
+                    <td>
+                        <a href="/Categories/Edit/@item.categoryID" class="btn btn-warning">Edit</a>
+                        <a href="/Categories/Delete/@item.categoryID" class="btn btn-danger">Delete</a>
+                    </td>
+                    
                 </tr>
             }
         
@@ -59,7 +61,10 @@
             
         </tbody>
     </table>
-    <a href="/Categories/Create" class="btn btn-light">Add Category</a>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      
+        <a href="/Categories/Create" class="btn btn-primary">Add Category</a>
+    </div>
 
 
 <div id="categoryBooksModal" class="modal">
