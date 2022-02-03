@@ -47,11 +47,15 @@ namespace BookStore.Controllers
 		
 		public List<Books> GetBooks(int id)
 		{
-			List<Books> books;
-			using (IDbConnection db = getConnection())
-			{
-				string _query = "Select * From Books WHERE bookAuthorID=" + id;
-				books = db.Query<Books>(_query).ToList();
+			List<Books> books = new List<Books>();
+            if (id != null)
+            {
+				using (IDbConnection db = getConnection())
+				{
+					string _query = "Select * From Books WHERE bookAuthorID=" + id;
+					books = db.Query<Books>(_query).ToList();
+				}
+
 			}
 			return books;
 		}

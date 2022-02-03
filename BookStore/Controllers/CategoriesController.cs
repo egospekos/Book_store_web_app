@@ -25,6 +25,16 @@ namespace BookStore.Controllers
 			return View(categories);
 		}
 
+		public List<Categories> GetAllCategories()
+        {
+			List<Categories> categories;
+			using (IDbConnection db = getConnection())
+			{
+				categories = db.Query<Categories>("Select * From Categories").ToList();
+			}
+			return categories;
+		}
+
 		public ActionResult ShowBooks(int id)
 		{
 			List<Books> books;
@@ -42,15 +52,19 @@ namespace BookStore.Controllers
 			List<Books> books = GetCategoryBooks(id);
 			return PartialView(books);
 		}
-		public List<Books> GetCategoryBooks(int id)
+		public List<Books> GetCategoryBooks(int? id)
 		{
-			List<Books> books;
-			using (IDbConnection connection = getConnection())
-			{
-				//LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID
-				string _query = "Select * FROM BookCategories a LEFT JOIN (Select * From Books LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID) b ON a.bookID=b.bookID WHERE categoryID=" + id;
-				books = connection.Query<Books>(_query).ToList();
-			}
+			List<Books> books = new List<Books>();
+            if (id != null)
+            {
+
+				using (IDbConnection connection = getConnection())
+				{
+					//LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID
+					string _query = "Select * FROM BookCategories a LEFT JOIN (Select * From Books LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID) b ON a.bookID=b.bookID WHERE categoryID=" + id;
+					books = connection.Query<Books>(_query).ToList();
+				}
+            }
 
 			return books;
 		}

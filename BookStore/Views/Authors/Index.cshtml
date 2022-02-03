@@ -24,14 +24,14 @@
 				{ "data": "countBook", "sType": "num", orderable:true,
                     "render": function (data, type, full, meta) {
 						    if (data != null && (type == 'display' || type == 'filter'))
-							    return "<button type='button' onclick='LoadAuthorBooks("+full.authorID+")'>"+data+"</button>";
+							    return "<button type='button' onclick='LoadAuthorBooks("+full.authorID+",\""+full.authorName+"\")'>"+data+"</button>";
 						    return data;
 					    }
                 },
 				{ "data": "books", "sType": "num", orderable:false,
                     "render": function (data, type, full, meta) {
 						    if (type == 'display' || type == 'filter')
-							    return "<button type='button' class='btn btn-warning' onclick='editID("+full.authorID+","+full.authorName+")'>Edit</button>"+
+							    return "<button type='button' class='btn btn-warning' onclick='editID("+full.authorID+",\""+full.authorName+"\")'>Edit</button>"+
                                         "<a href='/Authors/Delete/"+full.authorID+"' class='btn btn-danger'>Delete</a>";
 						    return data;
 					    }
@@ -104,6 +104,8 @@
     var editM = document.getElementById("editModal");
     var addM = document.getElementById("addModal");
     var booksM = document.getElementById("booksModal");
+    var partial_id;
+    var bookDataTable;
     function editID(ID,authorName){
         $("#getID").val(ID);
         $("#getName").val(authorName);
@@ -111,6 +113,32 @@
     
     
     }
+    //
+    bookDataTable = $('#bookTable').DataTable({
+        
+        
+
+        "columns": [
+				{ "data": "bookName", "sType": "num", orderable:true },
+				{ "data": "bookPages", "sType": "string", orderable:true },
+                { "data": "bookPrice", "sType": "date", orderable: true },
+				
+			],
+        "ajax": function (data, callback, settings) {
+            obj = {};
+		    $.ajax({
+                url: "/Authors/GetBooks/"+partial_id,
+                type: "GET",
+                data: obj
+            }).done(function (data){
+                console.log(data);
+                
+                    
+                callback({"data":data});
+		    }) //done
+	        }
+
+        }); // datatables
 
     //
     function addButtonClick(){
@@ -134,20 +162,13 @@
     
     //
 
-    function LoadAuthorBooks(ID){
-        obj={};
-        $.ajax({
-            url: "/Authors/GetBooks/"+ID,
-            type: "GET",
-            data: obj
-        }).done(function (data){
-            console.log(data);
-            for(var i=0;i<data.length;i++){
-                $("#bookTable tbody").append("<tr><td>"+data[i].bookName+"<td><td>"+data[i].bookPages+"<td><td>"+data[i].bookPrice+"<td><tr>");
-            }
-
-        });
+    function LoadAuthorBooks(ID,authorName){
+        
+        partial_id=ID;
+        document.getElementById("name4Partial").innerHTML = authorName+" Kitapları";
+        bookDataTable.ajax.reload();
         booksM.style.display = "block";
+
     }
 
     //
