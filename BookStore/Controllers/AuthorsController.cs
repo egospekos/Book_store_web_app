@@ -17,15 +17,21 @@ namespace BookStore.Controllers
 		// GET: AuthorsController
 		public ActionResult Index()
 		{
-			List<Authors> Authors;
-			using(IDbConnection db = getConnection())
+			
+			return View();
+		}
+
+		public List<Authors> GetAllAuthors()
+		{
+			List<Authors> data;
+			using (IDbConnection db = getConnection())
 			{
 				string _query = "Select * From Authors a LEFT JOIN " +
 					"(Select bookAuthorID as authorID,COUNT(*) as countBook FROM Books GROUP BY bookAuthorID) b " +
 					"ON a.authorID = b.authorID ";
-				Authors = db.Query<Authors>(_query).ToList();
+				data = db.Query<Authors>(_query).ToList();
 			}
-			return View(Authors);
+			return data;
 		}
 
 		public ActionResult ShowBooks(int id)

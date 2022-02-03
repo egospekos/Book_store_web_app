@@ -1,5 +1,4 @@
-﻿@using Entity_Layer
-@model List<Books>
+﻿
 @{
     Layout = null;
 }
@@ -14,21 +13,123 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.css" integrity="sha512-85w5tjZHguXpvARsBrIg9NWdNy5UBK16rAL8VWgnWXK2vMtcRKCBsHWSUbmMu0qHfXW2FVUDiWr6crA+IFdd1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.js" integrity="sha512-pF+DNRwavWMukUv/LyzDyDMn8U2uvqYQdJN0Zvilr6DDo/56xPDZdDoyPDYZRSL4aOKO/FGKXTpzDyQJ8je8Qw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <script>
-    $(document).ready( function () {
-    $('#bookTable').DataTable({
-        order: [[ 0, "asc" ]],
-        columnDefs: [
-            {
-            targets: ["nosort"],
-            orderable: false
-            }
-        ]
+    let bookDataTable;
+
+
+    $(function(){
+        CreateCategorySelectize();
+        LoadCategorySelectize();
+        bookDataTable = $('#bookTable').DataTable({
+            
+                "columns": [
+				
+				    { "data": "bookName", "sType": "string", orderable:true },
+                    { "data": "bookPages", "sType": "num", orderable: true },
+                    { "data": "bookPrice", "sType": "num", orderable: true },
+                    { "data": "authorName", "sType": "string", orderable: true },
+                    { "data": "categoryNames", "sType": "string", orderable: true,
+                        "render": function (data, type, full, meta) {
+						        if (data != null && (type == 'display' || type == 'filter')){
+                                    var categoryList = ""+data[0];
+                                    for(let i=1;i<data.length;i++) {
+                                        categoryList += ", " + data[i];
+                                    }
+							        return "<span>"+categoryList+"</span>";
+                                }
+						        return data;
+					        }
+                    },
+				    { "data": "bookID", "sType": "num", orderable:false,
+                        "render": function (data, type, full, meta) {
+						        if (type == 'display' || type == 'filter')
+							        return "<a href='/Books/Edit/"+data+"' class='btn btn-warning'>Edit</a>"+
+                                            "<a href='/Books/Delete/"+data+"' class='btn btn-danger'>Delete</a>";
+						        return data;
+					        }
+                    },
+			    ],
+
+
+
+
+                "ajax": function (data, callback, settings) {
+                    obj = {};
+                    obj.categoryIDs = $("#categorySelect").val();
+                    obj.minPrice = $("#getMinPrice").val();
+                    obj.maxPrice = $("#getMaxPrice").val();
+		            $.ajax({
+                        url: "/Books/GetAllBooks",
+                        type: "POST",
+                        data: obj
+                    }).done(function (data){
+                        console.log(data);
+                
+                    
+                        callback({"data":data});
+                   }) // a_done
+		        } //a_funct
+
+
+
+
+
+
+
+            }); // DT
+    
     });
-    } );
+
+
+
+
+    function CreateCategorySelectize(){
+                    select_category = $("#categorySelect").selectize({
+                    create: false,
+                    valueField: 'categoryID',
+                    sortField: 'categoryID',
+                    labelField: "categoryName",
+                    searchField: "categoryName",
+                    maxItems: 3,
+                });
+            }
+
+            function LoadCategorySelectize(){
+                obj = {};
+                $.ajax({
+                    url: "/Books/getCategories",
+                    type: "GET",
+                    data: obj
+                }).done(function (data){
+                    console.log(data);
+                    for (var i =0;i<data.length;i++){
+                        select_category[0].selectize.addOption(data[i]);
+                    }
+                    select_category[0].selectize.refreshOptions();
+                });
+            }
     </script>
 </head>
 <body>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      
+        <form>
+        
+            <span>Category</span><br>
+            <select id="categorySelect"></select><br />
+            <label>Minimum Price</label>
+            <input type="number" id="getMinPrice"/>
+            <label>Maximum Price</label>
+            <input type="number" id="getMaxPrice"/>
+        </form>
+        <button class="btn btn-warning" onclick="FilterClick()">Apply</button>
+      
+    </div>
+    
+    <br /><br /><br />
     <table id="bookTable">
         <thead>
             <tr>
@@ -37,34 +138,21 @@
                 <th>Price</th>
                 <th>Author</th>
                 <th>Category</th>
-                <th class="nosort">Edit</th>
-                <th class="nosort">Delete</th>
+                <th class="nosort">Actions</th>
                 
             </tr> 
         </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-            
-                <tr>
-                    <td>@item.bookName</td>
-                    <td>@item.bookPages</td>
-                    <td>@item.bookPrice tl</td>
-                    <td>@item.authorName</td>
-                    <td>
-                        @foreach (var cat in @item.categoryNames)
-                        {
-                            <span>@cat,</span>
-                        }
-                    </td>
-                    <td><a href="/Books/Edit/@item.bookID" class="btn btn-warning">Edit</a></td>
-                    <td><a href="/Books/Delete/@item.bookID" class="btn btn-danger">Delete</a></td>
-                </tr>
         
-            }
-            
-        </tbody>
     </table>
-    <a href="/Books/Create" class="btn btn-light">Add Book</a>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      
+      <a href="/Books/Create" class="btn btn-primary">Add Book</a>
+    </div>
 </body>
 </html>
+
+<script>
+    function FilterClick(){
+        bookDataTable.ajax.reload();
+    }
+</script>
