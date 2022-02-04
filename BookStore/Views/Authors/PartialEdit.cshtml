@@ -24,7 +24,8 @@
                 type:"POST",
                 data:obj
             }).done(function(data){
-                alert("success");
+                editM.style.display = 'none';
+                authorDataTable.ajax.reload();
             });
         });
     });

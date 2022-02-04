@@ -14,8 +14,9 @@
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
     <script>
-    $(document).ready( function () {
-    $('#authorTable').DataTable({
+    var authorDataTable;
+    $(function(){
+      authorDataTable = $('#authorTable').DataTable({
         
         "columns": [
 				{ "data": "authorID", "sType": "num", orderable:true },
@@ -28,11 +29,11 @@
 						    return data;
 					    }
                 },
-				{ "data": "books", "sType": "num", orderable:false,
+				{ "data": "authorID", "sType": "num", orderable:false,
                     "render": function (data, type, full, meta) {
 						    if (type == 'display' || type == 'filter')
-							    return "<button type='button' class='btn btn-warning' onclick='editID("+full.authorID+",\""+full.authorName+"\")'>Edit</button>"+
-                                        "<a href='/Authors/Delete/"+full.authorID+"' class='btn btn-danger'>Delete</a>";
+							    return "<button type='button' class='btn btn-warning' onclick='editID("+data+",\""+full.authorName+"\")'>Edit</button>"+
+                                       "<button  class='btn btn-danger' onclick='deleteID("+data+")'>Delete</button>";
 						    return data;
 					    }
                 },
@@ -54,7 +55,8 @@
 
 
     }); // datatable
-    } );
+    });
+    
 
 
     
@@ -143,6 +145,17 @@
     //
     function addButtonClick(){
         addM.style.display = "block";
+    }
+    //
+    function deleteID(ID){
+        obj = {};
+        $.ajax({
+            url: "/Authors/Delete/"+ID,
+            type: "POST",
+            data: obj
+        }).done(function(data){
+            authorDataTable.ajax.reload();
+        });
     }
     //
 

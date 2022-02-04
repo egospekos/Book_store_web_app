@@ -137,8 +137,8 @@ namespace BookStore.Controllers
 			}
 		}
 
-		// GET: AuthorsController/Delete/5
-		public ActionResult Delete(int id)
+		[HttpPost]
+		public void Delete(int id)
 		{
 			List<Books> books;
 			using (IDbConnection connection = getConnection())
@@ -151,23 +151,23 @@ namespace BookStore.Controllers
 					int rows = connection.Execute(deleteQuery);
 
 				}
-				return RedirectToAction("Index");
+				
 			}
 		}
 
 		// POST: AuthorsController/Delete/5
-		[HttpPost]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
+		//[HttpPost]
+		//public ActionResult Delete(int id, IFormCollection collection)
+		//{
+		//	try
+		//	{
+		//		return RedirectToAction(nameof(Index));
+		//	}
+		//	catch
+		//	{
+		//		return View();
+		//	}
+		//}
 
 		public IDbConnection getConnection()
 		{
