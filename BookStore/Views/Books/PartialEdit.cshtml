@@ -1,0 +1,125 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<html>
+    <head>
+        
+        <script>
+            
+            var edit_select_author;
+            var E_AuthorSelectize;
+            //
+            var edit_select_category;
+            var E_CategorySelectize;
+            $(function () {
+                //author
+                 E_CreateAuthorSelectize();
+                 E_AuthorSelectize = edit_select_author[0].selectize;
+                 E_LoadAuthorSelectize();
+                 //category
+                 E_CreateCategorySelectize();
+                 E_CategorySelectize = edit_select_category[0].selectize;
+                 E_LoadCategorySelectize();
+             });
+            
+            //author
+            function E_CreateAuthorSelectize(){
+                    edit_select_author = $("#E_authorSelect").selectize({
+                    create: false,
+                    valueField: 'authorID',
+                    sortField: 'authorID',
+                    labelField: "authorName",
+                    searchField: "authorName",
+                    
+                });
+            }
+            
+            function E_LoadAuthorSelectize(){
+                obj = {};
+                $.ajax({
+                    url: "/Books/getAuthors",
+                    type: "GET",
+                    data: obj
+                }).done(function (data){
+                    console.log(data);
+                    for (var i =0;i<data.length;i++){
+                        E_AuthorSelectize.addOption(data[i]);
+                    }
+                    E_AuthorSelectize.refreshOptions();
+                });
+            }
+
+            // category
+
+            function E_CreateCategorySelectize(){
+                    edit_select_category = $("#E_categorySelect").selectize({
+                    create: false,
+                    valueField: 'categoryID',
+                    sortField: 'categoryID',
+                    labelField: "categoryName",
+                    searchField: "categoryName",
+                    maxItems: 3,
+                });
+            }
+
+            function E_LoadCategorySelectize(){
+                obj = {};
+                $.ajax({
+                    url: "/Books/getCategories",
+                    type: "GET",
+                    data: obj
+                }).done(function (data){
+                    console.log(data);
+                    for (var i =0;i<data.length;i++){
+                        E_CategorySelectize.addOption(data[i]);
+                    }
+                    E_CategorySelectize.refreshOptions();
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Edit</h1>
+
+        <form>
+            
+            <input type="hidden" id ="edit_getID"/><br />
+            <label>Name</label><br />
+            <input type="text" id ="edit_getName"/><br />
+            <label>Pages</label><br />
+            <input type="text" id ="edit_getPages"/><br />
+            <label>Price</label><br />
+            <input type="text" id ="edit_getPrice"/><br />
+            <label>Author</label><br />
+            <select id ="E_authorSelect"></select><br />
+            <label>Category</label><br />
+            <select id ="E_categorySelect"></select><br />
+        </form>
+        <button class="btn-primary btn-primary" id="partial_edit_button">Submit</button>
+    </body>
+</html>
+
+
+<script>
+    $(function(){
+        $("#partial_edit_button").click(function(){
+            obj={};
+            obj.bookID = $("#edit_getID").val();
+            obj.bookName = $("#edit_getName").val();
+            obj.bookPages = $("#edit_getPages").val();
+            obj.bookPrice = $("#edit_getPrice").val();
+            obj.authorID = $("#E_authorSelect").val();
+            obj.categoryIDs = $("#E_categorySelect").val();
+            $.ajax({
+                url:"/Books/Edit",
+                type:"POST",
+                data:obj
+            }).done(function(data){
+                alert("success");
+            });
+        });
+    });
+</script>

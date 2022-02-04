@@ -46,7 +46,7 @@
 				    { "data": "bookID", "sType": "num", orderable:false,
                         "render": function (data, type, full, meta) {
 						        if (type == 'display' || type == 'filter')
-							        return "<a href='/Books/Edit/"+data+"' class='btn btn-warning'>Edit</a>"+
+							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+","+full.categoryIDs+")' class='btn btn-warning'>Edit</button>"+
                                             "<a href='/Books/Delete/"+data+"' class='btn btn-danger'>Delete</a>";
 						        return data;
 					        }
@@ -146,13 +146,55 @@
     </table>
     <div class="d-grid gap-2 col-6 mx-auto">
       
-      <a href="/Books/Create" class="btn btn-primary">Add Book</a>
+      <button onclick="AddModalClick()" class="btn btn-primary">Add Book</button>
     </div>
+
+    <div id="addModal" class="modal">
+      <div class="modal-content">
+        @Html.Partial("PartialCreate")
+      </div>
+    </div>
+
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        @Html.Partial("PartialEdit")
+      </div>
+    </div>
+
 </body>
 </html>
 
 <script>
+    var addM = document.getElementById("addModal");
+    var editM = document.getElementById("editModal");
     function FilterClick(){
         bookDataTable.ajax.reload();
     }
+    function AddModalClick(){
+        addM.style.display = "block";
+    }
+    
+    window.onclick = function(event){
+        if( event.target == addM){
+            addM.style.display = "none";
+        }
+        else if( event.target == editM){
+            editM.style.display = "none";
+        }
+    }
+
+
+    function editModalClick(ID,Name,Page,Price,Author,Categories){
+        $("#edit_getID").val(ID);
+        $("#edit_getName").val(Name);
+        $("#edit_getPages").val(Page);
+        $("#edit_getPrice").val(Price);
+        E_AuthorSelectize.setValue(Author,false);
+        console.log(Categories)
+        E_CategorySelectize.setValue(Categories,false);
+     
+
+        editM.style.display = "block";
+    }
+    
 </script>

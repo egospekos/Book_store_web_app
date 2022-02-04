@@ -201,20 +201,21 @@ namespace BookStore.Controllers
 		}
 
 		// GET: BookController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			Books b;
-			using(IDbConnection connection = getConnection())
-			{
-				string _query = "SELECT * FROM Books WHERE bookID="+id;
-				b = connection.Query<Books>(_query).SingleOrDefault();
-			}
-			return View(b);
-		}
+		//public ActionResult Edit(int id)
+		//{
+		//	Books b;
+		//	using(IDbConnection connection = getConnection())
+		//	{
+		//		string _query = "SELECT * FROM Books WHERE bookID="+id;
+		//		b = connection.Query<Books>(_query).SingleOrDefault();
+		//	}
+		//	return View(b);
+		//}
+		
 
 		// POST: BookController/Edit/5
 		[HttpPost]
-		public ActionResult Edit(Books p)
+		public void Edit(Books p)
 		{
 			string _queryUPDATE = "UPDATE Books SET bookName=@bookName, bookPages=@bookPages, bookPrice=@bookPrice, bookAuthorID=@authorID WHERE bookID=@bookID";
 			string _queryDropCats = "DELETE FROM BookCategories WHERE bookId=@bookID";
@@ -232,12 +233,12 @@ namespace BookStore.Controllers
 					}
 
 				}
-				return RedirectToAction(nameof(Index));
+				
 			}
 
 			catch
 			{
-				return View();
+				Console.WriteLine("Book editleme hatası");
 			}
 		}
 
