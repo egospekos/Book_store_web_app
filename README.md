@@ -7,4 +7,4 @@ Main focus is list tables and doing CRUD operations on html-razor pages.
 Database -> MSSQL <br>
 Controllers -> C# <br>
 ORM -> Dapper <br>
-Front-end -> bootstrap 5 / javascript (jquery,chart.js,selectize.js,datatables)
+Front-end -> bootstrap 5 / javascript (jquery,ajax,chart.js,selectize.js,datatables)
