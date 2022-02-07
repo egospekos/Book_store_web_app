@@ -50,7 +50,7 @@
                                 console.log(full);
 						        if (type == 'display' || type == 'filter')
 							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+","+full.categoryIDs+")' class='btn btn-warning'>Edit</button>"+
-                                            "<a href='/Books/Delete/"+data+"' class='btn btn-danger'>Delete</a>";
+                                            "<button onclick='deleteBook("+data+")' class='btn btn-danger'>Delete</button>";
 						        return data;
 					        }
                     },
@@ -176,7 +176,16 @@
     function AddModalClick(){
         addM.style.display = "block";
     }
-    
+    function deleteBook(ID){
+        obj = {};
+		    $.ajax({
+                url: "/Books/Delete/"+ID,
+                type: "POST",
+                data: obj
+            }).done(function (data){
+                bookDataTable.ajax.reload();
+		    })
+    }
     window.onclick = function(event){
         if( event.target == addM){
             addM.style.display = "none";

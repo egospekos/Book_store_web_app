@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+<form class="form-group">
+    <label>Name</label><br />
+    <input type="text" id="getName"/><br>
+    <input type="hidden" id="getID"/><br>
+</form>
+    <button class="btn btn-primary" id = "edit_button" onclick="editCat()">Submit</button>
+
+<script>
+    function editCat(){
+        var obj = {};
+            obj.CategoryName = $("#getName").val();
+            obj.CategoryID = $("#getID").val();
+            $.ajax({
+                url: "/Categories/Edit",
+                type: "POST",
+                data: obj
+            }).done(function(data){
+                editM.style.display = "none";
+                categoryDataTable.ajax.reload();
+            });
+    }
+</script>

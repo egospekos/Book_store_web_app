@@ -40,8 +40,8 @@
                     { "data": "categoryID", "sType": "num", orderable: false,
                         "render": function (data, type, full, meta) {
 						        if (data != null && (type == 'display' || type == 'filter')){
-                                    return "<a href='/Categories/Edit/"+data+"' class='btn btn-warning'>Edit</a>"+
-                                            "<a href='/Categories/Delete/"+data+"' class='btn btn-danger'>Delete</a>";
+                                    return "<button onclick='editModalClick("+data+",\""+full.categoryName+"\")' class='btn btn-warning'>Edit</button>"+
+                                            "<button onclick='deleteCategory("+data+")' class='btn btn-danger'>Delete</button>";
                                 }
 						        return data;
 					        }
@@ -135,12 +135,19 @@
       </div>
 </div>
 
+<div id="editModal" class="modal">
+      <div class="modal-content">
+        @Html.Partial("PartialEdit")
+      </div>
+</div>
+
 
 </body>
 
 <script>
     var categoryM = document.getElementById("categoryBooksModal");
     var addM = document.getElementById("addModal");
+    var editM = document.getElementById("editModal");
     
     
 
@@ -156,6 +163,22 @@
     function addModalClick(){
         addM.style.display = "block";
     }
+    function editModalClick(ID,Name){
+        $("#getName").val(Name);
+        $("#getID").val(ID);
+        editM.style.display = "block";
+        
+    }
+    function deleteCategory(ID){
+        obj = {};
+		    $.ajax({
+                url: "/Categories/Delete/"+ID,
+                type: "POST",
+                data: obj
+            }).done(function (data){
+                categoryDataTable.ajax.reload();
+		    })
+    }
 
     
     //
@@ -165,6 +188,9 @@
         }
         if(event.target==addM){
             addM.style.display = "none";
+        }
+        if(event.target==editM){
+            editM.style.display = "none";
         }
         
     }
