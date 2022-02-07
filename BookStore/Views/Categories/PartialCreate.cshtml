@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+
+<form class="form-group">
+    <input type="text" placeholder="Name" id="categoryName"/>
+</form>
+    <button class="btn btn-primary" id = "add_button">Add</button>
+
+<script>
+    $(function(){
+        $("#add_button").click(function(){
+            var obj = {};
+            obj.categoryName = $("#categoryName").val();
+            $.ajax({
+                url:  "/Categories/Create",
+                type: "POST",
+                data: obj
+            }).done(function (data){
+                
+                addM.style.display="none";
+                categoryDataTable.ajax.reload();
+            });
+        });
+    });
+</script>

@@ -119,7 +119,7 @@
     </table>
     <div class="d-grid gap-2 col-6 mx-auto">
       
-        <a href="/Categories/Create" class="btn btn-primary">Add Category</a>
+        <button onclick="addModalClick()" class="btn btn-primary">Add Category</button>
     </div>
 
 
@@ -129,12 +129,18 @@
   </div>
 </div>
 
+<div id="addModal" class="modal">
+      <div class="modal-content">
+        @Html.Partial("PartialCreate")
+      </div>
+</div>
 
 
 </body>
 
 <script>
     var categoryM = document.getElementById("categoryBooksModal");
+    var addM = document.getElementById("addModal");
     
     
 
@@ -147,12 +153,20 @@
 
     }
 
+    function addModalClick(){
+        addM.style.display = "block";
+    }
+
     
     //
     window.onclick = function (event){
         if(event.target==categoryM){
             categoryM.style.display = "none";
         }
+        if(event.target==addM){
+            addM.style.display = "none";
+        }
+        
     }
 
 
