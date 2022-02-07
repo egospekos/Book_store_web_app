@@ -120,24 +120,50 @@
         <button onclick="addModalClick()" class="btn btn-primary">Add Category</button>
     </div>
 
-
-<div id="categoryBooksModal" class="modal">
-  <div class="modal-content">
-    @Html.Partial("PartialShowBooks")
-  </div>
-</div>
-
-<div id="addModal" class="modal">
-      <div class="modal-content">
-        @Html.Partial("PartialCreate")
+    <div id="editModal" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Category</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            @Html.Partial("PartialEdit")
+          </div>
+        </div>
       </div>
-</div>
+    </div>
 
-<div id="editModal" class="modal">
-      <div class="modal-content">
-        @Html.Partial("PartialEdit")
+    <div id="addModal" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Category</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            @Html.Partial("PartialCreate")
+          </div>
+        </div>
       </div>
-</div>
+    </div>
+
+    <div id="categoryBooksModal" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Category Books</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            @Html.Partial("PartialShowBooks")
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
 
 
 </body>
