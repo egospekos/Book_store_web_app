@@ -18,10 +18,12 @@
     
     <script>
     let bookDataTable;
+    let select_category;
 
 
     $(function(){
         CreateCategorySelectize();
+        categorySelectize = select_category[0].selectize;
         LoadCategorySelectize();
         bookDataTable = $('#bookTable').DataTable({
             
@@ -45,6 +47,7 @@
                     },
 				    { "data": "bookID", "sType": "num", orderable:false,
                         "render": function (data, type, full, meta) {
+                                console.log(full);
 						        if (type == 'display' || type == 'filter')
 							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+","+full.categoryIDs+")' class='btn btn-warning'>Edit</button>"+
                                             "<a href='/Books/Delete/"+data+"' class='btn btn-danger'>Delete</a>";
@@ -66,8 +69,8 @@
                         type: "POST",
                         data: obj
                     }).done(function (data){
-                        console.log(data);
-                
+                        //console.log(data);
+                        
                     
                         callback({"data":data});
                    }) // a_done
@@ -90,7 +93,7 @@
                     select_category = $("#categorySelect").selectize({
                     create: false,
                     valueField: 'categoryID',
-                    sortField: 'categoryID',
+                    sortField: 'categoryName',
                     labelField: "categoryName",
                     searchField: "categoryName",
                     maxItems: 3,
@@ -104,11 +107,11 @@
                     type: "GET",
                     data: obj
                 }).done(function (data){
-                    console.log(data);
+                    
                     for (var i =0;i<data.length;i++){
-                        select_category[0].selectize.addOption(data[i]);
+                        categorySelectize.addOption(data[i]);
                     }
-                    select_category[0].selectize.refreshOptions();
+                    categorySelectize.refreshOptions();
                 });
             }
     </script>
@@ -184,13 +187,13 @@
     }
 
 
-    function editModalClick(ID,Name,Page,Price,Author,Categories){
+    function editModalClick(ID,Name,Page,Price,Author,...Categories){
         $("#edit_getID").val(ID);
         $("#edit_getName").val(Name);
         $("#edit_getPages").val(Page);
         $("#edit_getPrice").val(Price);
         E_AuthorSelectize.setValue(Author,false);
-        console.log(Categories)
+        console.log(Categories);
         E_CategorySelectize.setValue(Categories,false);
      
 

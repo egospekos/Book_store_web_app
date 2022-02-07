@@ -30,7 +30,7 @@
                     edit_select_author = $("#E_authorSelect").selectize({
                     create: false,
                     valueField: 'authorID',
-                    sortField: 'authorID',
+                    sortField: 'authorName',
                     labelField: "authorName",
                     searchField: "authorName",
                     
@@ -44,7 +44,7 @@
                     type: "GET",
                     data: obj
                 }).done(function (data){
-                    console.log(data);
+                    
                     for (var i =0;i<data.length;i++){
                         E_AuthorSelectize.addOption(data[i]);
                     }
@@ -58,7 +58,7 @@
                     edit_select_category = $("#E_categorySelect").selectize({
                     create: false,
                     valueField: 'categoryID',
-                    sortField: 'categoryID',
+                    sortField: 'categoryName',
                     labelField: "categoryName",
                     searchField: "categoryName",
                     maxItems: 3,
@@ -72,7 +72,7 @@
                     type: "GET",
                     data: obj
                 }).done(function (data){
-                    console.log(data);
+                    
                     for (var i =0;i<data.length;i++){
                         E_CategorySelectize.addOption(data[i]);
                     }
@@ -118,7 +118,8 @@
                 type:"POST",
                 data:obj
             }).done(function(data){
-                alert("success");
+                editM.style.display = "none";
+                bookDataTable.ajax.reload();
             });
         });
     });

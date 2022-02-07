@@ -1,0 +1,210 @@
+﻿@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Books</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <script>
+    var authorDataTable;
+    $(function(){
+      authorDataTable = $('#authorTable').DataTable({
+        
+        "columns": [
+				{ "data": "authorID", "sType": "num", orderable:true },
+				{ "data": "authorName", "sType": "string", orderable:true },
+                { "data": "authorBday", "sType": "date", orderable: true },
+				{ "data": "countBook", "sType": "num", orderable:true,
+                    "render": function (data, type, full, meta) {
+						    if (data != null && (type == 'display' || type == 'filter'))
+							    return "<button type='button' onclick='LoadAuthorBooks("+full.authorID+",\""+full.authorName+"\")'>"+data+"</button>";
+						    return data;
+					    }
+                },
+				{ "data": "authorID", "sType": "num", orderable:false,
+                    "render": function (data, type, full, meta) {
+						    if (type == 'display' || type == 'filter')
+							    return "<button type='button' class='btn btn-warning' onclick='editID("+data+",\""+full.authorName+"\",\""+full.authorBday+"\")'>Edit</button>"+
+                                       "<button  class='btn btn-danger' onclick='deleteID("+data+")'>Delete</button>";
+						    return data;
+					    }
+                },
+			],
+        "ajax": function (data, callback, settings) {
+            obj = {};
+            rows = [];
+		    $.ajax({
+                url: "/Authors/GetAllAuthors",
+                type: "GET",
+                data: obj
+            }).done(function (data){
+                console.log(data);
+                
+                    
+                callback({"data":data});
+		    }) //done
+	        }
+
+
+    }); // datatable
+    });
+    
+
+
+    
+    </script>
+</head>
+<body>
+    
+    <table id="authorTable">
+        <thead>
+            <tr>
+                <th class="">ID</th>
+                <th>Name</th>
+                <th>Birthday</th>
+                <th>Books</th>
+                <th class="nosort">Actions</th>
+            </tr> 
+        </thead>
+    </table>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <button class="btn btn-primary" id="modalButton_add" onclick="addButtonClick()">Add Author</button>
+    </div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+    @Html.Partial("PartialEdit")
+  </div>
+</div>
+
+<div id="addModal" class="modal">
+  <div class="modal-content">
+    @Html.Partial("PartialCreate")
+  </div>
+</div>
+
+<div id="booksModal" class="modal">
+ <div class="modal-content">
+   @Html.Partial("PartialShowbooks")
+ </div></div>
+
+
+
+
+</body>
+
+
+<script>
+    var editM = document.getElementById("editModal");
+    var addM = document.getElementById("addModal");
+    var booksM = document.getElementById("booksModal");
+    var partial_id;
+    var bookDataTable;
+    function editID(ID,Name,Birthday){
+        $("#getID").val(ID);
+        $("#getName").val(Name);
+
+
+        console.log(Birthday);
+        var _date = new Date(Birthday);
+
+        var day = ("0" + _date.getDate()).slice(-2);
+        var month = ("0" + (_date.getMonth() + 1)).slice(-2);
+
+        var bDay = _date.getFullYear()+"-"+(month)+"-"+(day) ;
+
+        $("#getBday").val(bDay);
+        //$("#getBday").val(new Date(Birthday));
+
+
+
+        editM.style.display = "block";
+    }
+
+    //
+    bookDataTable = $('#bookTable').DataTable({
+        
+        
+
+        "columns": [
+				{ "data": "bookName", "sType": "num", orderable:true },
+				{ "data": "bookPages", "sType": "string", orderable:true },
+                { "data": "bookPrice", "sType": "date", orderable: true },
+				
+			],
+        "ajax": function (data, callback, settings) {
+            obj = {};
+		    $.ajax({
+                url: "/Authors/GetBooks/"+partial_id,
+                type: "GET",
+                data: obj
+            }).done(function (data){
+                console.log(data);
+                
+                    
+                callback({"data":data});
+		    }) //done
+	        }
+
+        }); // datatables
+
+    //
+    function addButtonClick(){
+        addM.style.display = "block";
+    }
+    //
+    function deleteID(ID){
+        obj = {};
+        $.ajax({
+            url: "/Authors/Delete/"+ID,
+            type: "POST",
+            data: obj
+        }).done(function(data){
+            authorDataTable.ajax.reload();
+        });
+    }
+    //
+
+    window.onclick = function(event) {
+      
+      if (event.target == editM) {
+        editM.style.display = "none";
+      }
+      else if (event.target == addM) {
+        addM.style.display = "none";
+      }
+      else if (event.target == booksM) {
+        booksM.style.display = "none";
+      }
+    }
+   
+    
+    //
+
+    function LoadAuthorBooks(ID,authorName){
+        
+        partial_id=ID;
+        document.getElementById("name4Partial").innerHTML = authorName+" Kitapları";
+        bookDataTable.ajax.reload();
+        booksM.style.display = "block";
+
+    }
+
+    //
+
+
+</script>
+
+
+
+</html>
+
+

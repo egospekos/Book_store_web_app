@@ -31,7 +31,7 @@
                     type: "GET",
                     data: obj
                 }).done(function (data){
-                    console.log(data);
+                    
                     for (var i =0;i<data.length;i++){
                         select_author[0].selectize.addOption(data[i]);
                     }
@@ -57,7 +57,7 @@
                     type: "GET",
                     data: obj
                 }).done(function (data){
-                    console.log(data);
+                    
                     for (var i =0;i<data.length;i++){
                         select_category[0].selectize.addOption(data[i]);
                     }
@@ -101,7 +101,8 @@
             type: "POST",
             data: obj
         }).done(function(data){
-            alert("success");
+            addM.style.display = "none";
+            bookDataTable.ajax.reload();
         });
     }
 </script>
