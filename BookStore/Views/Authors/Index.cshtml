@@ -1,7 +1,9 @@
-﻿@{
-    Layout = null;
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
 
 <!DOCTYPE html>
 
@@ -9,9 +11,8 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Books</title>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
     <script>
     var authorDataTable;
@@ -67,7 +68,7 @@
     <table id="authorTable">
         <thead>
             <tr>
-                <th class="">ID</th>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Birthday</th>
                 <th>Books</th>
@@ -206,5 +207,7 @@
 
 
 </html>
+
+
 
 
