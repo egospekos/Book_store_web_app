@@ -17,7 +17,7 @@ namespace BookStore.Controllers
 		// GET: AuthorsController
 		public ActionResult Index()
 		{
-
+			
 			return View();
 		}
 
@@ -26,9 +26,9 @@ namespace BookStore.Controllers
 			List<Authors> data;
 			using (IDbConnection db = getConnection())
 			{
-				string _query = "Select * From Authors a LEFT JOIN " +
-					"(Select bookAuthorID as authorID,COUNT(*) as countBook FROM Books GROUP BY bookAuthorID) b " +
-					"ON a.authorID = b.authorID ";
+				string _query = @"Select * From Authors a LEFT JOIN
+					(Select bookAuthorID as authorID,COUNT(*) as countBook FROM Books 
+					GROUP BY bookAuthorID) b ON a.authorID = b.authorID ";
 				data = db.Query<Authors>(_query).ToList();
 			}
 			return data;
@@ -37,8 +37,8 @@ namespace BookStore.Controllers
 		public List<Books> GetBooks(int id)
 		{
 			List<Books> books = new List<Books>();
-			if (id != null)
-			{
+            if (id != null)
+            {
 				using (IDbConnection db = getConnection())
 				{
 					string _query = "Select * From Books WHERE bookAuthorID=" + id;
@@ -48,7 +48,7 @@ namespace BookStore.Controllers
 			}
 			return books;
 		}
-
+		
 
 
 		// POST: AuthorsController/Create
@@ -59,9 +59,9 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute("INSERT INTO Authors VALUES(@authorName,@authorBday)", p);
+					int rows = connection.Execute("INSERT INTO Authors VALUES(@authorName,@authorBday)",p);
 				}
-				return RedirectToAction(nameof(Index));
+					return RedirectToAction(nameof(Index));
 			}
 			catch
 			{
@@ -80,9 +80,9 @@ namespace BookStore.Controllers
 				using (IDbConnection connection = getConnection())
 				{
 
-					connection.Execute(_query, p);
+					connection.Execute(_query,p);
 				}
-
+					
 				return RedirectToAction("Index");
 			}
 			catch
@@ -92,20 +92,25 @@ namespace BookStore.Controllers
 		}
 
 		[HttpPost]
-		public void Delete(int id)
+		public string Delete(int id)
 		{
 			List<Books> books;
 			using (IDbConnection connection = getConnection())
 			{
-				string selectQuery = "SELECT * FROM Books WHERE bookAuthorID=" + id;
+				string selectQuery = "SELECT * FROM Books WHERE bookAuthorID="+id;
 				string deleteQuery = "DELETE FROM Authors WHERE authorID=" + id;
 				books = connection.Query<Books>(selectQuery).ToList();
 				if (books.Count == 0)
 				{
 					int rows = connection.Execute(deleteQuery);
+					return "Success";
 
 				}
-
+				else
+				{
+					return "Error";
+				}
+				
 			}
 		}
 

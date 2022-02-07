@@ -131,7 +131,8 @@
 
 
 <script>
-    var editM = document.getElementById("editModal");
+    //var editM = document.getElementById("editModal");
+    var editM = $("#editModal");
     var addM = document.getElementById("addModal");
     var booksM = document.getElementById("booksModal");
     var partial_id;
@@ -196,6 +197,9 @@
             type: "POST",
             data: obj
         }).done(function(data){
+            if(data=="Error"){
+                alert("Error");
+            }
             authorDataTable.ajax.reload();
         });
     }

@@ -26,7 +26,7 @@ namespace BookStore.Controllers
 		}
 
 		public List<Categories> GetAllCategories()
-		{
+        {
 			List<Categories> categories;
 			using (IDbConnection db = getConnection())
 			{
@@ -55,8 +55,8 @@ namespace BookStore.Controllers
 		public List<Books> GetCategoryBooks(int? id)
 		{
 			List<Books> books = new List<Books>();
-			if (id != null)
-			{
+            if (id != null)
+            {
 
 				using (IDbConnection connection = getConnection())
 				{
@@ -64,7 +64,7 @@ namespace BookStore.Controllers
 					string _query = "Select * FROM BookCategories a LEFT JOIN (Select * From Books LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID) b ON a.bookID=b.bookID WHERE categoryID=" + id;
 					books = connection.Query<Books>(_query).ToList();
 				}
-			}
+            }
 
 			return books;
 		}
@@ -76,29 +76,24 @@ namespace BookStore.Controllers
 			return temp;
 		}
 
-		// GET: CategoryController/Create
-		public ActionResult Create()
-		{
-			return View();
-		}
-
+		
 		// POST: CategoryController/Create
 		[HttpPost]
-		public JsonResult Create(Categories c)
+		public ActionResult Create(Categories c)
 		{
 			string _query = "INSERT INTO Categories (categoryName) VALUES (@categoryName)";
 			try
 			{
 				using (IDbConnection connection = getConnection())
 				{
-
-					int rows = connection.Execute(_query, c);
+					
+					int rows = connection.Execute(_query,c);
 				}
-				return null;
+				return RedirectToAction(nameof(Index));
 			}
 			catch
 			{
-				return null;
+				return View();
 			}
 		}
 
@@ -107,9 +102,9 @@ namespace BookStore.Controllers
 		{
 			Categories c;
 			String _query = "SELECT * FROM Categories WHERE categoryID=" + id;
-			using (IDbConnection connection = getConnection())
+			using(IDbConnection connection = getConnection())
 			{
-				c = connection.Query<Categories>(_query).SingleOrDefault();
+				c=connection.Query<Categories>(_query).SingleOrDefault();
 			}
 			return View(c);
 		}
@@ -123,7 +118,7 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute(_query, c);
+					int rows = connection.Execute(_query,c);
 				}
 				return RedirectToAction(nameof(Index));
 			}
@@ -133,7 +128,10 @@ namespace BookStore.Controllers
 			}
 		}
 
-		// GET: CategoryController/Delete/5
+		
+
+		// POST: CategoryController/Delete/5
+		[HttpPost]
 		public ActionResult Delete(int id)
 		{
 			string _categoryQuery = "DELETE FROM BookCategories WHERE categoryID=" + id;
@@ -144,20 +142,6 @@ namespace BookStore.Controllers
 				int rows = connection.Execute(_query);
 			}
 			return RedirectToAction(nameof(Index));
-		}
-
-		// POST: CategoryController/Delete/5
-		[HttpPost]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
 		}
 	}
 }
