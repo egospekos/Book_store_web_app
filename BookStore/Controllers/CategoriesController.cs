@@ -26,7 +26,7 @@ namespace BookStore.Controllers
 		}
 
 		public List<Categories> GetAllCategories()
-        {
+		{
 			List<Categories> categories;
 			using (IDbConnection db = getConnection())
 			{
@@ -55,8 +55,8 @@ namespace BookStore.Controllers
 		public List<Books> GetCategoryBooks(int? id)
 		{
 			List<Books> books = new List<Books>();
-            if (id != null)
-            {
+			if (id != null)
+			{
 
 				using (IDbConnection connection = getConnection())
 				{
@@ -64,7 +64,7 @@ namespace BookStore.Controllers
 					string _query = "Select * FROM BookCategories a LEFT JOIN (Select * From Books LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID) b ON a.bookID=b.bookID WHERE categoryID=" + id;
 					books = connection.Query<Books>(_query).ToList();
 				}
-            }
+			}
 
 			return books;
 		}
@@ -74,12 +74,6 @@ namespace BookStore.Controllers
 		{
 			IDbConnection temp = new SqlConnection(connectionString);
 			return temp;
-		}
-
-		// GET: CategoryController/Details/5
-		public ActionResult Details(int id)
-		{
-			return View();
 		}
 
 		// GET: CategoryController/Create
@@ -97,8 +91,8 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					
-					int rows = connection.Execute(_query,c);
+
+					int rows = connection.Execute(_query, c);
 				}
 				return null;
 			}
@@ -113,9 +107,9 @@ namespace BookStore.Controllers
 		{
 			Categories c;
 			String _query = "SELECT * FROM Categories WHERE categoryID=" + id;
-			using(IDbConnection connection = getConnection())
+			using (IDbConnection connection = getConnection())
 			{
-				c=connection.Query<Categories>(_query).SingleOrDefault();
+				c = connection.Query<Categories>(_query).SingleOrDefault();
 			}
 			return View(c);
 		}
@@ -129,7 +123,7 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute(_query,c);
+					int rows = connection.Execute(_query, c);
 				}
 				return RedirectToAction(nameof(Index));
 			}

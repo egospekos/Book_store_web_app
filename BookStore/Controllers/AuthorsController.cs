@@ -17,7 +17,7 @@ namespace BookStore.Controllers
 		// GET: AuthorsController
 		public ActionResult Index()
 		{
-			
+
 			return View();
 		}
 
@@ -34,22 +34,11 @@ namespace BookStore.Controllers
 			return data;
 		}
 
-		public ActionResult ShowBooks(int id)
-		{
-			List<Books> Books = GetBooks(id);
-			return View(Books);
-		}
-		public ActionResult PartialShowbooks(int id)
-		{
-			List<Books> Books = GetBooks(id);
-			return PartialView();
-		}
-		
 		public List<Books> GetBooks(int id)
 		{
 			List<Books> books = new List<Books>();
-            if (id != null)
-            {
+			if (id != null)
+			{
 				using (IDbConnection db = getConnection())
 				{
 					string _query = "Select * From Books WHERE bookAuthorID=" + id;
@@ -59,19 +48,8 @@ namespace BookStore.Controllers
 			}
 			return books;
 		}
-		
 
-		// GET: AuthorsController/Details/5
-		public ActionResult Details(int id)
-		{
-			return View();
-		}
 
-		// GET: AuthorsController/Create
-		public ActionResult Create()
-		{
-			return View();
-		}
 
 		// POST: AuthorsController/Create
 		[HttpPost]
@@ -81,38 +59,14 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute("INSERT INTO Authors VALUES(@authorName,@authorBday)",p);
+					int rows = connection.Execute("INSERT INTO Authors VALUES(@authorName,@authorBday)", p);
 				}
-					return RedirectToAction(nameof(Index));
+				return RedirectToAction(nameof(Index));
 			}
 			catch
 			{
 				return View();
 			}
-		}
-
-		public ActionResult PartialCreate()
-		{
-			return PartialView("PartialCreate");
-		}
-
-		// GET: AuthorsController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			Authors p;
-			string _query = "Select * From Authors WHERE authorID=" + id;
-			using(IDbConnection connection = getConnection())
-			{
-				p = connection.Query<Authors>(_query).SingleOrDefault();
-
-			}
-			return View(p);
-		}
-
-		public ActionResult PartialEdit()
-		{
-			
-			return PartialView();
 		}
 
 
@@ -126,9 +80,9 @@ namespace BookStore.Controllers
 				using (IDbConnection connection = getConnection())
 				{
 
-					connection.Execute(_query,p);
+					connection.Execute(_query, p);
 				}
-					
+
 				return RedirectToAction("Index");
 			}
 			catch
@@ -143,7 +97,7 @@ namespace BookStore.Controllers
 			List<Books> books;
 			using (IDbConnection connection = getConnection())
 			{
-				string selectQuery = "SELECT * FROM Books WHERE bookAuthorID="+id;
+				string selectQuery = "SELECT * FROM Books WHERE bookAuthorID=" + id;
 				string deleteQuery = "DELETE FROM Authors WHERE authorID=" + id;
 				books = connection.Query<Books>(selectQuery).ToList();
 				if (books.Count == 0)
@@ -151,23 +105,10 @@ namespace BookStore.Controllers
 					int rows = connection.Execute(deleteQuery);
 
 				}
-				
+
 			}
 		}
 
-		// POST: AuthorsController/Delete/5
-		//[HttpPost]
-		//public ActionResult Delete(int id, IFormCollection collection)
-		//{
-		//	try
-		//	{
-		//		return RedirectToAction(nameof(Index));
-		//	}
-		//	catch
-		//	{
-		//		return View();
-		//	}
-		//}
 
 		public IDbConnection getConnection()
 		{

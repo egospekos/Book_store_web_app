@@ -23,8 +23,8 @@ namespace BookStore.Controllers
 		// GET: ReportsController
 		public ActionResult Index()
 		{
-			
-			
+
+
 			return View();
 		}
 
