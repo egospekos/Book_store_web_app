@@ -3,22 +3,29 @@
     <input type="text" class="form-control" placeholder="Name" id="authorName"/>
     <input type="date" class="form-control" placeholder="Birthday" id="authorBday"/>
 </form>
-    <button id = "authorAdd" class="btn btn-primary">Add</button>
+    <button onclick = "authorAddClick()" class="btn btn-primary">Add</button>
 
 <script>
-    $(function(){
-        $("#authorAdd").click(function(){
-            var obj = {};
-            obj.authorName = $("#authorName").val();
+    function authorAddClick(){
+        var obj = {};
+        obj.authorName = $("#authorName").val();
+        
+        
+        if( obj.authorName == ""){
+            
+            alert("Name must be filled.");
+        }
+        else{
             obj.authorBday = $("#authorBday").val();
             $.ajax({
-                url: "/Authors/Create",
-                type: "POST",
-                data: obj
-            }).done(function (data){
-                addM.style.display = 'none';
-                authorDataTable.ajax.reload();
-            });
+            url: "/Authors/Create",
+            type: "POST",
+            data: obj
+        }).done(function (data){
+            addM.style.display = 'none';
+            authorDataTable.ajax.reload();
         });
-    });
+        }
+        
+    }
 </script>

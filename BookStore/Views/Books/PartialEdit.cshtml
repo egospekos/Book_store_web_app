@@ -94,21 +94,25 @@
             <label>Category</label><br />
             <select id ="E_categorySelect"></select><br />
         </form>
-        <button class="btn-primary btn-primary" id="partial_edit_button">Submit</button>
+        <button class="btn-primary btn-primary" onclick="partialEditButton()">Submit</button>
     </body>
 </html>
 
 
 <script>
-    $(function(){
-        $("#partial_edit_button").click(function(){
-            obj={};
+    function partialEditButton(){
+        obj={};
             obj.bookID = $("#edit_getID").val();
             obj.bookName = $("#edit_getName").val();
             obj.bookPages = $("#edit_getPages").val();
             obj.bookPrice = $("#edit_getPrice").val();
             obj.authorID = $("#E_authorSelect").val();
-            obj.categoryIDs = $("#E_categorySelect").val();
+
+            if(obj.bookName=="" || obj.bookPages=="" || obj.bookPrice=="" || obj.authorID==""){
+                alert("Name, Pages, Price, Author can't be empty");
+            }
+            else{
+                obj.categoryIDs = $("#E_categorySelect").val();
             $.ajax({
                 url:"/Books/Edit",
                 type:"POST",
@@ -117,6 +121,8 @@
                 editM.style.display = "none";
                 bookDataTable.ajax.reload();
             });
-        });
-    });
+            }
+            
+    }
+    
 </script>

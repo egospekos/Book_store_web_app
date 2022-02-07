@@ -92,7 +92,12 @@
         obj.bookPages = $("#getPages").val();
         obj.bookPrice = $("#getPrice").val();
         obj.authorID = $("#authorSelect").val();
-        obj.categoryIDs = $("#partialCategorySelect").val();
+        
+        if(obj.bookName=="" || obj.bookPages=="" || obj.bookPrice=="" || obj.authorID==""){
+            alert("Name, Pages, Price, Author can't be empty");
+        }
+        else{
+            obj.categoryIDs = $("#partialCategorySelect").val();
         $.ajax({
             url:"/Books/Create",
             type: "POST",
@@ -101,5 +106,7 @@
             addM.style.display = "none";
             bookDataTable.ajax.reload();
         });
+        }
+        
     }
 </script>

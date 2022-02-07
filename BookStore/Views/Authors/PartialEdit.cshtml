@@ -6,14 +6,18 @@
     <input type="date" id ="getBday"/><br />
     <input type="hidden" id ="getID"/>
 </form>
-<button class="btn-primary btn-primary" id="edit_button">Submit</button>
+<button class="btn-primary btn-primary" onclick="editButtonClick()">Submit</button>
 
 
 <script>
-    $(function(){
-        $("#edit_button").click(function(){
-            var obj={};
+    function editButtonClick(){
+        var obj={};
             obj.authorName = $("#getName").val();
+            
+        if(obj.authorName==""){
+            alert("Name must be filled.");
+        }
+        else{
             obj.authorID = $("#getID").val();
             obj.authorBday = $("#getBday").val();
             $.ajax({
@@ -24,7 +28,8 @@
                 editM.style.display = 'none';
                 authorDataTable.ajax.reload();
             });
-            //console.log($("#getBday").val());
-        }); // click
-    });
+        }
+            
+    }
+    
 </script>

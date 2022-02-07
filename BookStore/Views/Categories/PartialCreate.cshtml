@@ -6,13 +6,16 @@
 <form class="form-group">
     <input type="text" placeholder="Name" id="categoryName"/>
 </form>
-    <button class="btn btn-primary" id = "add_button">Add</button>
+    <button class="btn btn-primary" onclick = "addButtonClick()">Add</button>
 
 <script>
-    $(function(){
-        $("#add_button").click(function(){
-            var obj = {};
+    function addButtonClick(){
+        var obj = {};
             obj.categoryName = $("#categoryName").val();
+        if(obj.categoryName==""){
+            alert("Name must be filled.");
+        }
+        else{
             $.ajax({
                 url:  "/Categories/Create",
                 type: "POST",
@@ -22,6 +25,9 @@
                 addM.style.display="none";
                 categoryDataTable.ajax.reload();
             });
-        });
-    });
+        }
+        
+            
+    }
+    
 </script>
