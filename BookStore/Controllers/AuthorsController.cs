@@ -41,8 +41,8 @@ namespace BookStore.Controllers
             {
 				using (IDbConnection db = getConnection())
 				{
-					string _query = "Select * From Books WHERE bookAuthorID=" + id;
-					books = db.Query<Books>(_query).ToList();
+					string _query = "Select * From Books WHERE bookAuthorID=@id";
+					books = db.Query<Books>(_query, new {id= id }).ToList();
 				}
 
 			}
@@ -55,11 +55,12 @@ namespace BookStore.Controllers
 		[HttpPost]
 		public ActionResult Create(Authors p)
 		{
+			string _query = "INSERT INTO Authors VALUES(@authorName,@authorBday)";
 			try
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute("INSERT INTO Authors VALUES(@authorName,@authorBday)",p);
+					connection.Execute(_query,p);
 				}
 					return RedirectToAction(nameof(Index));
 			}
@@ -92,24 +93,15 @@ namespace BookStore.Controllers
 		}
 
 		[HttpPost]
-		public string Delete(int id)
+		public void Delete(int id)
 		{
 			List<Books> books;
 			using (IDbConnection connection = getConnection())
 			{
-				string selectQuery = "SELECT * FROM Books WHERE bookAuthorID="+id;
-				string deleteQuery = "DELETE FROM Authors WHERE authorID=" + id;
-				books = connection.Query<Books>(selectQuery).ToList();
-				if (books.Count == 0)
-				{
-					int rows = connection.Execute(deleteQuery);
-					return "Success";
-
-				}
-				else
-				{
-					return "Error";
-				}
+				
+				string deleteQuery = "DELETE FROM Authors WHERE authorID=@id";
+				connection.Execute(deleteQuery,new {id=id});
+					
 				
 			}
 		}

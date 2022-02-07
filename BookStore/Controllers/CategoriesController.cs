@@ -20,7 +20,8 @@ namespace BookStore.Controllers
 			List<Categories> categories;
 			using (IDbConnection db = getConnection())
 			{
-				categories = db.Query<Categories>("Select * From Categories").ToList();
+				string _query = "Select * From Categories";
+				categories = db.Query<Categories>(_query).ToList();
 			}
 			return View(categories);
 		}
@@ -30,7 +31,8 @@ namespace BookStore.Controllers
 			List<Categories> categories;
 			using (IDbConnection db = getConnection())
 			{
-				categories = db.Query<Categories>("Select * From Categories").ToList();
+				string _query = "Select * From Categories";
+				categories = db.Query<Categories>(_query).ToList();
 			}
 			return categories;
 		}
@@ -40,9 +42,11 @@ namespace BookStore.Controllers
 			List<Books> books;
 			using (IDbConnection connection = getConnection())
 			{
-				//LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID
-				string _query = "Select * FROM BookCategories a LEFT JOIN (Select [bookName],[bookID],[bookPages],[bookPrice] From Books) b ON a.bookID=b.bookID WHERE categoryID=" + id;
-				books = connection.Query<Books>(_query).ToList();
+				
+				string _query = @"Select * FROM BookCategories a 
+				LEFT JOIN (Select [bookName],[bookID],[bookPages],[bookPrice] From Books) b 
+				ON a.bookID=b.bookID WHERE categoryID=@id";
+				books = connection.Query<Books>(_query,new {id=id}).ToList();
 			}
 
 			return View(books);
@@ -60,9 +64,11 @@ namespace BookStore.Controllers
 
 				using (IDbConnection connection = getConnection())
 				{
-					//LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID
-					string _query = "Select * FROM BookCategories a LEFT JOIN (Select * From Books LEFT JOIN Authors ON Books.bookAuthorID = Authors.authorID) b ON a.bookID=b.bookID WHERE categoryID=" + id;
-					books = connection.Query<Books>(_query).ToList();
+					
+					string _query = @"Select * FROM [BookCategories] a 
+									LEFT JOIN (Select * From [Books] c LEFT JOIN [Authors] d ON c.[bookAuthorID] = d.[authorID]) b 
+									ON a.[bookID]=b.[bookID] WHERE [categoryID]=@id";
+					books = connection.Query<Books>(_query,new {id=id}).ToList();
 				}
             }
 
@@ -87,7 +93,7 @@ namespace BookStore.Controllers
 				using (IDbConnection connection = getConnection())
 				{
 					
-					int rows = connection.Execute(_query,c);
+					connection.Execute(_query,c);
 				}
 				return RedirectToAction(nameof(Index));
 			}
@@ -101,10 +107,10 @@ namespace BookStore.Controllers
 		public ActionResult Edit(int id)
 		{
 			Categories c;
-			String _query = "SELECT * FROM Categories WHERE categoryID=" + id;
+			String _query = "SELECT * FROM Categories WHERE categoryID=@id";
 			using(IDbConnection connection = getConnection())
 			{
-				c=connection.Query<Categories>(_query).SingleOrDefault();
+				c = connection.Query<Categories>(_query,new {id=id}).SingleOrDefault();
 			}
 			return View(c);
 		}
@@ -118,7 +124,7 @@ namespace BookStore.Controllers
 			{
 				using (IDbConnection connection = getConnection())
 				{
-					int rows = connection.Execute(_query,c);
+					connection.Execute(_query,c);
 				}
 				return RedirectToAction(nameof(Index));
 			}
@@ -134,12 +140,12 @@ namespace BookStore.Controllers
 		[HttpPost]
 		public ActionResult Delete(int id)
 		{
-			string _categoryQuery = "DELETE FROM BookCategories WHERE categoryID=" + id;
-			string _query = "DELETE FROM Categories WHERE categoryID=" + id;
+			string _categoryQuery = "DELETE FROM BookCategories WHERE categoryID=@id";
+			string _query = "DELETE FROM Categories WHERE categoryID=@id";
 			using (IDbConnection connection = getConnection())
 			{
-				int _rows = connection.Execute(_categoryQuery);
-				int rows = connection.Execute(_query);
+				connection.Execute(_categoryQuery, new {id= id });
+				connection.Execute(_query, new { id = id });
 			}
 			return RedirectToAction(nameof(Index));
 		}

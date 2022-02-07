@@ -34,7 +34,7 @@
                     "render": function (data, type, full, meta) {
 						    if (type == 'display' || type == 'filter')
 							    return "<button type='button' class='btn btn-warning' onclick='editID("+data+",\""+full.authorName+"\",\""+full.authorBday+"\")'>Edit</button>"+
-                                       "<button  class='btn btn-danger' onclick='deleteID("+data+")'>Delete</button>";
+                                       "<button  class='btn btn-danger' onclick='deleteID("+data+","+full.countBook+")'>Delete</button>";
 						    return data;
 					    }
                 },
@@ -131,8 +131,7 @@
 
 
 <script>
-    //var editM = document.getElementById("editModal");
-    var editM = $("#editModal");
+    var editM = document.getElementById("editModal");
     var addM = document.getElementById("addModal");
     var booksM = document.getElementById("booksModal");
     var partial_id;
@@ -151,10 +150,6 @@
         var bDay = _date.getFullYear()+"-"+(month)+"-"+(day) ;
 
         $("#getBday").val(bDay);
-        //$("#getBday").val(new Date(Birthday));
-
-
-
         editM.style.display = "block";
     }
 
@@ -190,18 +185,22 @@
         addM.style.display = "block";
     }
     //
-    function deleteID(ID){
-        obj = {};
-        $.ajax({
-            url: "/Authors/Delete/"+ID,
-            type: "POST",
-            data: obj
-        }).done(function(data){
-            if(data=="Error"){
-                alert("Error");
-            }
-            authorDataTable.ajax.reload();
-        });
+    function deleteID(ID,books){
+        if(books>0){
+                alert("Can't delete Author with books.");
+        }
+        else{
+            obj = {};
+            $.ajax({
+                url: "/Authors/Delete/"+ID,
+                type: "POST",
+                data: obj
+            }).done(function(data){
+            
+                authorDataTable.ajax.reload();
+            });
+        }
+        
     }
     //
 

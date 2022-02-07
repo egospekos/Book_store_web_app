@@ -31,18 +31,18 @@ namespace BookStore.Controllers
 			using (IDbConnection db = getConnection())
 			{
 				Books = ApplyFilter(filter);
-				// for xml path categories names tek string dön
-				// books içinde string categories prop
-				// editte kitap için categoryids getir (kitap id ile)
+                // for xml path categories names tek string dön
+                // books içinde string categories prop
+                // editte kitap için categoryids getir (kitap id ile)
 
-				//foreach (var item in Books)
-				//{
-				//	categories = db.Query<BookCategories>("Select * From BookCategories JOIN Categories ON BookCategories.categoryID=Categories.categoryID WHERE bookID=@bookID", item).ToList();
-				//	item.categoryNames = categories.Select(x => x.categoryName).ToArray();
-				//	item.categoryIDs = categories.Select(x => x.categoryID).ToArray();
+                foreach (var item in Books)
+                {
+                    categories = db.Query<BookCategories>("Select * From BookCategories JOIN Categories ON BookCategories.categoryID=Categories.categoryID WHERE bookID=@bookID", item).ToList();
+                    item.categoryNames = categories.Select(x => x.categoryName).ToArray();
+                    item.categoryIDs = categories.Select(x => x.categoryID).ToArray();
 
-				//}
-			}
+                }
+            }
 			return Books;
 		}
 
@@ -61,7 +61,7 @@ namespace BookStore.Controllers
 					"LEFT JOIN Authors a ON b.bookAuthorID = a.authorID " +
 					"WHERE 1=1";
 
-				//_query += PriceFilter(filters.minPrice, filters.maxPrice);
+				
 				if (filters.maxPrice != 0)
 				{
 					_query += " AND [bookPrice]<=@max ";
@@ -74,40 +74,13 @@ namespace BookStore.Controllers
 				{
 					_query += " AND bc.[categoryID] IN @categories ";
 				}
-				//_query += CategoryFilter(filters.categoryIDs);
+				
 				Books = db.Query<Books>(_query, new {max=filters.maxPrice,min=filters.minPrice, categories=filters.categoryIDs }).ToList();
 
 			}
 			return Books;
 		}
 		     
-		public String PriceFilter(int? min,int? max)
-		{
-			String s = "";
-			if (min != 0 && min != null) s+= " AND [bookPrice]>"+min;
-			if (max != 0 && max != null) s+= " AND [bookPrice]<"+max;
-			
-			return s;
-		}
-		public String CategoryFilter(int[] categories) 
-		{
-			String s = "";
-			if (categories != null)
-			{
-
-				
-				s += " AND bc.[categoryID] IN(" + categories[0];
-				for (int i = 1; i < categories.Length; i++)
-				{
-					s += ", " + categories[i];
-				}
-				s += ")";
-			}
-			return s;
-		}
-
-		
-
 		
 		public List<Categories> getCategories()
 		{
@@ -142,18 +115,21 @@ namespace BookStore.Controllers
 		public ActionResult Create(Books b)
 		{
 			
-			string addBookQuery = "INSERT INTO Books (bookName,bookPages,bookPrice,bookAuthorID) VALUES (@bookName,@bookPages,@bookPrice,@authorID);SELECT @@Identity";
-			string addBookCatQuery = "INSERT INTO BookCategories (categoryID,bookID) VALUES (@categoryID,@bookID)";
+			string addBookQuery = @"INSERT INTO Books (bookName,bookPages,bookPrice,bookAuthorID) 
+								  VALUES (@bookName,@bookPages,@bookPrice,@authorID);SELECT @@Identity";
+			string addBookCatQuery = @"INSERT INTO BookCategories (categoryID,bookID) 
+									 VALUES (@categoryID,@bookID)";
 			try
 			{
-				int rows, rows_2, newID;
+				int newID;
 				using (IDbConnection connection = getConnection())
 				{
 					newID = connection.Query<int>(addBookQuery,b).SingleOrDefault();
-					//newID = FindID(b);
+					string _query = @"INSERT INTO BookCategories (categoryID,bookID) 
+									VALUES (@catID,@bookID)";
 					foreach (var item in b.categoryIDs)
 					{
-						rows_2 = connection.Execute(CatString(item, newID));
+						connection.Execute(_query,new {catID= item, bookID = newID});
 					}
 					
 				}
@@ -165,10 +141,7 @@ namespace BookStore.Controllers
 			}
 		}
 		
-		public String CatString(int catID,int bookID)
-		{
-			return "INSERT INTO BookCategories (categoryID,bookID) VALUES (" + catID + "," + bookID + ")";
-		}
+		
 
 
 		// POST: BookController/Edit/5
