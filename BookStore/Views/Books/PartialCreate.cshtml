@@ -4,10 +4,13 @@
         
         <script>
             var select_author;
+            var create_select_category;
             $(function () {
                  CreateAuthorSelectize();
+                 _createAuthorSelectize = select_author[0].selectize;
                  LoadAuthorSelectize();
                  Part_Create_Cat_Select();
+                 _createCategorySelectize = create_select_category[0].selectize;
                  Part_Load_Cat_Select();
              });
             function CreateAuthorSelectize(){
@@ -30,14 +33,14 @@
                 }).done(function (data){
                     
                     for (var i =0;i<data.length;i++){
-                        select_author[0].selectize.addOption(data[i]);
+                        _createAuthorSelectize.addOption(data[i]);
                     }
-                    select_author[0].selectize.refreshOptions();
+                    _createAuthorSelectize.refreshOptions();
                 });
             }
 
             function Part_Create_Cat_Select(){
-                    select_category = $("#partialCategorySelect").selectize({
+                    create_select_category = $("#partialCategorySelect").selectize({
                     create: false,
                     valueField: 'categoryID',
                     sortField: 'categoryID',
@@ -56,9 +59,9 @@
                 }).done(function (data){
                     
                     for (var i =0;i<data.length;i++){
-                        select_category[0].selectize.addOption(data[i]);
+                        _createCategorySelectize.addOption(data[i]);
                     }
-                    select_category[0].selectize.refreshOptions();
+                    _createCategorySelectize.refreshOptions();
                 });
             }
         </script>

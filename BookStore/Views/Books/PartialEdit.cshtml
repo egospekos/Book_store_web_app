@@ -10,6 +10,7 @@
             //
             var edit_select_category;
             var E_CategorySelectize;
+            var oldCategories;
             $(function () {
                 //author
                  E_CreateAuthorSelectize();
@@ -113,6 +114,9 @@
             }
             else{
                 obj.categoryIDs = $("#E_categorySelect").val();
+                
+                if(obj.categoryIDs == "") obj.categoryIDs = oldCategories;
+                
             $.ajax({
                 url:"/Books/Edit",
                 type:"POST",

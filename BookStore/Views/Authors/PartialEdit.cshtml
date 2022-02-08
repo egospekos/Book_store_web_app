@@ -5,6 +5,7 @@
     <label>Birthday</label><br />
     <input type="date" id ="getBday"/><br />
     <input type="hidden" id ="getID"/>
+    <input type="hidden" id ="oldBday"/>
 </form>
 <button class="btn-primary btn-primary" onclick="editButtonClick()">Submit</button>
 
@@ -20,6 +21,7 @@
         else{
             obj.authorID = $("#getID").val();
             obj.authorBday = $("#getBday").val();
+            if(obj.authorBday == "") obj.authorBday = $("#oldBday").val();
             $.ajax({
                 url:"/Authors/Edit",
                 type:"POST",

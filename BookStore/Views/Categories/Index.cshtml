@@ -30,7 +30,7 @@
                         "render": function (data, type, full, meta) {
 						        if (data != null && (type == 'display' || type == 'filter')){
                                     
-							        return "<button type='button' onclick='LoadCategoryBooks("+data+",\""+full.categoryName+"\")'>Books</button>";
+							        return "<button type='button' class='btn btn-info' onclick='LoadCategoryBooks("+data+",\""+full.categoryName+"\")'>Books</button>";
                                 }
 						        return data;
 					        }

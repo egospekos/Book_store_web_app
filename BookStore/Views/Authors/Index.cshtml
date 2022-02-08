@@ -20,13 +20,20 @@
       authorDataTable = $('#authorTable').DataTable({
         
         "columns": [
-				{ "data": "authorID", "sType": "num", orderable:true },
+				
 				{ "data": "authorName", "sType": "string", orderable:true },
-                { "data": "authorBday", "sType": "date", orderable: true },
+                { "data": "authorBday", "sType": "date", orderable: true,
+                    "render": function (data, type, full, meta) {
+						    if (data != null && (type == 'display' || type == 'filter'))
+                                var _date = new Date(data);
+							    return parseInt(_date.getFullYear());
+						    return "None";
+					    }
+                },
 				{ "data": "countBook", "sType": "num", orderable:true,
                     "render": function (data, type, full, meta) {
 						    if (data != null && (type == 'display' || type == 'filter'))
-							    return "<button type='button' onclick='LoadAuthorBooks("+full.authorID+",\""+full.authorName+"\")'>"+data+"</button>";
+							    return "<button type='button' class='btn btn-info' onclick='LoadAuthorBooks("+full.authorID+",\""+full.authorName+"\")'>"+data+"</button>";
 						    return data;
 					    }
                 },
@@ -68,7 +75,7 @@
     <table id="authorTable">
         <thead>
             <tr>
-                <th>ID</th>
+                
                 <th>Name</th>
                 <th>Birthday</th>
                 <th>Books</th>
@@ -139,7 +146,7 @@
     function editID(ID,Name,Birthday){
         $("#getID").val(ID);
         $("#getName").val(Name);
-
+        
 
         console.log(Birthday);
         var _date = new Date(Birthday);
@@ -147,8 +154,9 @@
         var day = ("0" + _date.getDate()).slice(-2);
         var month = ("0" + (_date.getMonth() + 1)).slice(-2);
 
-        var bDay = _date.getFullYear()+"-"+(month)+"-"+(day) ;
+        var bDay = _date.getFullYear()+"-"+(month)+"-"+(day);
 
+        $("#oldBday").val(bDay);
         $("#getBday").val(bDay);
         editM.style.display = "block";
     }
@@ -182,6 +190,7 @@
 
     //
     function addButtonClick(){
+        
         addM.style.display = "block";
     }
     //

@@ -57,7 +57,7 @@ namespace BookStore.Controllers
 				
 				_query = "SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID] " +
 					"FROM [Books] b " +
-					"JOIN [BookCategories] bc ON b.bookID=bc.[bookID] " +
+					"LEFT JOIN [BookCategories] bc ON b.bookID=bc.[bookID] " +
 					"LEFT JOIN Authors a ON b.bookAuthorID = a.authorID " +
 					"WHERE 1=1";
 
@@ -117,8 +117,7 @@ namespace BookStore.Controllers
 			
 			string addBookQuery = @"INSERT INTO Books (bookName,bookPages,bookPrice,bookAuthorID) 
 								  VALUES (@bookName,@bookPages,@bookPrice,@authorID);SELECT @@Identity";
-			string addBookCatQuery = @"INSERT INTO BookCategories (categoryID,bookID) 
-									 VALUES (@categoryID,@bookID)";
+			
 			try
 			{
 				int newID;
@@ -127,10 +126,14 @@ namespace BookStore.Controllers
 					newID = connection.Query<int>(addBookQuery,b).SingleOrDefault();
 					string _query = @"INSERT INTO BookCategories (categoryID,bookID) 
 									VALUES (@catID,@bookID)";
-					foreach (var item in b.categoryIDs)
+					if (b.categoryIDs != null)
 					{
-						connection.Execute(_query,new {catID= item, bookID = newID});
+						foreach (var item in b.categoryIDs)
+						{
+							connection.Execute(_query, new { catID = item, bookID = newID });
+						}
 					}
+					
 					
 				}
 					return RedirectToAction(nameof(Index));
@@ -158,10 +161,14 @@ namespace BookStore.Controllers
 				{
 					connection.Execute(_queryUPDATE,p);
 					connection.Execute(_queryDropCats,p);
-					foreach (var item in p.categoryIDs)
+					if(p.categoryIDs != null)
 					{
-						connection.Execute("INSERT INTO BookCategories(categoryID, bookID) VALUES(@catID,@bookID)", new {catID=item,bookID=p.bookID});
+						foreach (var item in p.categoryIDs)
+						{
+							connection.Execute("INSERT INTO BookCategories(categoryID, bookID) VALUES(@catID,@bookID)", new { catID = item, bookID = p.bookID });
+						}
 					}
+					
 
 				}
 				

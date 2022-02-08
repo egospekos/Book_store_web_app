@@ -46,7 +46,7 @@
                     },
 				    { "data": "bookID", "sType": "num", orderable:false,
                         "render": function (data, type, full, meta) {
-                                console.log(full);
+                                
 						        if (type == 'display' || type == 'filter')
 							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+","+full.categoryIDs+")' class='btn btn-warning'>Edit</button>"+
                                             "<button onclick='deleteBook("+data+")' class='btn btn-danger'>Delete</button>";
@@ -68,7 +68,7 @@
                         type: "POST",
                         data: obj
                     }).done(function (data){
-                        //console.log(data);
+                        console.log(data);
                         
                     
                         callback({"data":data});
@@ -207,6 +207,13 @@
     }
 
     function AddModalClick(){
+        $("#getName").val(null);
+        $("#getPages").val(null);
+        $("#getPrice").val(null);
+        _createAuthorSelectize.setValue(null);
+        //categorySelectize.setValue(null);
+        
+
         addM.style.display = "block";
     }
     function deleteBook(ID){
@@ -235,8 +242,9 @@
         $("#edit_getPages").val(Page);
         $("#edit_getPrice").val(Price);
         E_AuthorSelectize.setValue(Author,false);
-        console.log(Categories);
+        
         E_CategorySelectize.setValue(Categories,false);
+        //oldCategories = Categories;
      
 
         editM.style.display = "block";

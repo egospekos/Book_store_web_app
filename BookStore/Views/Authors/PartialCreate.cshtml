@@ -2,6 +2,7 @@
 <form class="form-group">
     <input type="text" class="form-control" placeholder="Name" id="authorName"/>
     <input type="date" class="form-control" placeholder="Birthday" id="authorBday"/>
+    <input type="hidden" class="form-control" placeholder="Birthday" id="oldBday"/>
 </form>
     <button onclick = "authorAddClick()" class="btn btn-primary">Add</button>
 
@@ -17,6 +18,7 @@
         }
         else{
             obj.authorBday = $("#authorBday").val();
+            
             $.ajax({
             url: "/Authors/Create",
             type: "POST",
