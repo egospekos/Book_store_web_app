@@ -26,40 +26,51 @@ namespace BookStore.Controllers
 		[HttpPost]
 		public List<Books> GetAllBooks(Filter filter)
         {
-			List<Books> Books;
-			List<BookCategories> categories;
+			List<Books> books;
+
+			var sql = @" SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID],
+						(select STUFF ((
+						SELECT ','+c.categoryName FROM BookCategories bc JOIN Categories c ON bc.categoryID = c.categoryID WHERE bc.bookID = b.bookID FOR XML PATH('')),1,1,'')) as categoryNames  
+						FROM [Books] b 
+						LEFT JOIN Authors a ON b.bookAuthorID = a.authorID 
+						LEFT JOIN BookCategories bcc ON bcc.bookID = b.bookID WHERE 1=1 ";
+			if (filter.maxPrice != 0)
+			{
+				sql += " AND [bookPrice]<=@max ";
+			}
+			if (filter.minPrice != 0)
+			{
+				sql += " AND [bookPrice]>=@min ";
+			}
+			if (filter.categoryIDs != null && filter.categoryIDs.Any())
+			{
+				sql += " AND bcc.[categoryID] IN @categories ";
+			}
+
+
+			//string firstTable = ApplyFilter(filter);
+			//string secondTable = "SELECT bookID, categoryNames = STUFF((SELECT ','+CONVERT(VARCHAR(6),categoryID) FROM BookCategories t1 WHERE t1.bookID = t2.bookID FOR XML PATH('')),1,1,'') FROM BookCategories t2 GROUP BY bookID";
+			//string fullQuery = "SELECT * FROM ("+firstTable+") tl JOIN ("+secondTable+") tr ON tl.bookID = tr.bookID";
 			using (IDbConnection db = getConnection())
 			{
-				Books = ApplyFilter(filter);
-                // for xml path categories names tek string dön
-                // books içinde string categories prop
-                // editte kitap için categoryids getir (kitap id ile)
 
-                foreach (var item in Books)
-                {
-                    categories = db.Query<BookCategories>("Select * From BookCategories JOIN Categories ON BookCategories.categoryID=Categories.categoryID WHERE bookID=@bookID", item).ToList();
-                    item.categoryNames = categories.Select(x => x.categoryName).ToArray();
-                    item.categoryIDs = categories.Select(x => x.categoryID).ToArray();
-
-                }
-            }
-			return Books;
+				books = db.Query<Books>(sql, new {max=filter.maxPrice,min=filter.minPrice,categories=filter.categoryIDs}).ToList();
+				// connection.Execute(_query, new { catID = item, bookID = newID });
+				//newID = connection.Query<int>(addBookQuery,b).SingleOrDefault();
+			}
+			return books;
 		}
 
 
-		public List<Books> ApplyFilter(Filter filters)
+		public string ApplyFilter(Filter filters)
 		{
 			
-			List<Books> Books;
+			
 			string _query;
 			using (IDbConnection db = getConnection())
 			{
 				
-				_query = "SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID] " +
-					"FROM [Books] b " +
-					"LEFT JOIN [BookCategories] bc ON b.bookID=bc.[bookID] " +
-					"LEFT JOIN Authors a ON b.bookAuthorID = a.authorID " +
-					"WHERE 1=1";
+				_query = "SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID] FROM [Books] b LEFT JOIN [BookCategories] bc ON b.bookID=bc.[bookID] LEFT JOIN Authors a ON b.bookAuthorID = a.authorID WHERE 1=1";
 
 				
 				if (filters.maxPrice != 0)
@@ -75,10 +86,10 @@ namespace BookStore.Controllers
 					_query += " AND bc.[categoryID] IN @categories ";
 				}
 				
-				Books = db.Query<Books>(_query, new {max=filters.maxPrice,min=filters.minPrice, categories=filters.categoryIDs }).ToList();
+				
 
 			}
-			return Books;
+			return _query;
 		}
 		     
 		
@@ -93,6 +104,23 @@ namespace BookStore.Controllers
 
 			}
 			return categories;
+
+
+		}
+
+		public int[] getBookCategories(int id)
+		{
+			List<BookCategories> bCategories;
+			int[] _categories;
+			string _query = "SELECT * FROM BookCategories WHERE bookID=@id";
+			using (IDbConnection connection = getConnection())
+			{
+
+				bCategories = connection.Query<BookCategories>(_query, new {id=id}).ToList();
+
+			}
+			_categories = bCategories.Select(x => x.categoryID).ToArray();
+			return _categories;
 
 
 		}

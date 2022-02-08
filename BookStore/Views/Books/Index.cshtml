@@ -32,23 +32,12 @@
                     { "data": "bookPages", "sType": "num", orderable: true },
                     { "data": "bookPrice", "sType": "num", orderable: true },
                     { "data": "authorName", "sType": "string", orderable: true },
-                    { "data": "categoryNames", "sType": "string", orderable: true,
-                        "render": function (data, type, full, meta) {
-						        if (data != null && (type == 'display' || type == 'filter')){
-                                    var categoryList = ""+data[0];
-                                    for(let i=1;i<data.length;i++) {
-                                        categoryList += ", " + data[i];
-                                    }
-							        return "<span>"+categoryList+"</span>";
-                                }
-						        return data;
-					        }
-                    },
+                    { "data": "categoryNames", "sType": "string", orderable: true},
 				    { "data": "bookID", "sType": "num", orderable:false,
                         "render": function (data, type, full, meta) {
                                 
 						        if (type == 'display' || type == 'filter')
-							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+","+full.categoryIDs+")' class='btn btn-warning'>Edit</button>"+
+							        return "<button onclick='editModalClick( "+data+" , \""+full.bookName+"\" ,"+full.bookPages+","+full.bookPrice+","+full.authorID+")' class='btn btn-warning'>Edit</button>"+
                                             "<button onclick='deleteBook("+data+")' class='btn btn-danger'>Delete</button>";
 						        return data;
 					        }
@@ -236,15 +225,27 @@
     }
 
 
-    function editModalClick(ID,Name,Page,Price,Author,...Categories){
+    function editModalClick(ID,Name,Page,Price,Author){
         $("#edit_getID").val(ID);
         $("#edit_getName").val(Name);
         $("#edit_getPages").val(Page);
         $("#edit_getPrice").val(Price);
         E_AuthorSelectize.setValue(Author,false);
         
-        E_CategorySelectize.setValue(Categories,false);
-        //oldCategories = Categories;
+        var Categories;
+        obj = {};
+		$.ajax({
+            url: "/Books/getBookCategories/"+ID,
+            type: "GET",
+            data: obj
+        }).done(function (data){
+            
+            Categories=data;
+            
+            E_CategorySelectize.setValue(Categories,false);
+		})
+        
+        
      
 
         editM.style.display = "block";
