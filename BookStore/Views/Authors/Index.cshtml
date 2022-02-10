@@ -26,7 +26,7 @@
                     "render": function (data, type, full, meta) {
 						    if (data != null && (type == 'display' || type == 'filter'))
                                 var _date = new Date(data);
-							    return parseInt(_date.getFullYear());
+                                return (("0" + _date.getDate()).slice(-2))+"."+(("0" + (_date.getMonth() + 1)).slice(-2))+"."+_date.getFullYear();
 						    return "None";
 					    }
                 },

@@ -21,8 +21,10 @@ namespace BookStore.Controllers
 			return View();
 		}
 
+		//[HttpPost]
 		public List<Authors> GetAllAuthors()
 		{
+			//HttpRequest[];
 			List<Authors> data;
 			using (IDbConnection db = getConnection())
 			{

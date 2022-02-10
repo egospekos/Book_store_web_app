@@ -26,6 +26,20 @@ namespace BookStore.Controllers
 		[HttpPost]
 		public List<Books> GetAllBooks(Filter filter)
         {
+			//int max, min;
+			//if(filter.maxPrice!=null) max = int.Parse(filter.maxPrice);
+			//else max = -1;
+			//if (filter.minPrice != null) min = int.Parse(filter.minPrice);
+			//else min = -1;
+
+			int? max, min;
+			if (filter.maxPrice != null) max = filter.maxPrice;
+			else max = -1;
+			if (filter.minPrice != null) min = filter.minPrice;
+			else min = -1;
+
+
+			int[] categories = filter.categoryIDs;
 			List<Books> books;
 
 			var sql = @" SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID],
@@ -34,15 +48,15 @@ namespace BookStore.Controllers
 						FROM [Books] b 
 						LEFT JOIN Authors a ON b.bookAuthorID = a.authorID 
 						LEFT JOIN BookCategories bcc ON bcc.bookID = b.bookID WHERE 1=1 ";
-			if (filter.maxPrice != 0)
+			if (max != -1)
 			{
 				sql += " AND [bookPrice]<=@max ";
 			}
-			if (filter.minPrice != 0)
+			if (min != -1)
 			{
 				sql += " AND [bookPrice]>=@min ";
 			}
-			if (filter.categoryIDs != null && filter.categoryIDs.Any())
+			if (categories != null && categories.Any())
 			{
 				sql += " AND bcc.[categoryID] IN @categories ";
 			}
@@ -54,7 +68,7 @@ namespace BookStore.Controllers
 			using (IDbConnection db = getConnection())
 			{
 
-				books = db.Query<Books>(sql, new {max=filter.maxPrice,min=filter.minPrice,categories=filter.categoryIDs}).ToList();
+				books = db.Query<Books>(sql, new {max= max, min=min,categories= categories }).ToList();
 				// connection.Execute(_query, new { catID = item, bookID = newID });
 				//newID = connection.Query<int>(addBookQuery,b).SingleOrDefault();
 			}
@@ -62,35 +76,6 @@ namespace BookStore.Controllers
 		}
 
 
-		public string ApplyFilter(Filter filters)
-		{
-			
-			
-			string _query;
-			using (IDbConnection db = getConnection())
-			{
-				
-				_query = "SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID] FROM [Books] b LEFT JOIN [BookCategories] bc ON b.bookID=bc.[bookID] LEFT JOIN Authors a ON b.bookAuthorID = a.authorID WHERE 1=1";
-
-				
-				if (filters.maxPrice != 0)
-				{
-					_query += " AND [bookPrice]<=@max ";
-				}
-				if (filters.minPrice != 0)
-				{
-					_query += " AND [bookPrice]>=@min ";
-				}
-				if (filters.categoryIDs !=null && filters.categoryIDs.Any())
-				{
-					_query += " AND bc.[categoryID] IN @categories ";
-				}
-				
-				
-
-			}
-			return _query;
-		}
 		     
 		
 		public List<Categories> getCategories()
