@@ -1,37 +1,24 @@
-﻿
-<form class="form-group">
-    <label>Name</label><br />
-    <input type="text" id ="getName"/><br />
-    <label>Birthday</label><br />
-    <input type="date" id ="getBday"/><br />
-    <input type="hidden" id ="getID"/>
-    <input type="hidden" id ="oldBday"/>
-</form>
-<button class="btn-primary btn-primary" onclick="editButtonClick()">Submit</button>
-
-
-<script>
-    function editButtonClick(){
-        var obj={};
-            obj.authorName = $("#getName").val();
-            
-        if(obj.authorName==""){
-            alert("Name must be filled.");
-        }
-        else{
-            obj.authorID = $("#getID").val();
-            obj.authorBday = $("#getBday").val();
-            if(obj.authorBday == "") obj.authorBday = $("#oldBday").val();
-            $.ajax({
-                url:"/Authors/Edit",
-                type:"POST",
-                data:obj
-            }).done(function(data){
-                editM.style.display = 'none';
-                authorDataTable.ajax.reload();
-            });
-        }
-            
-    }
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-</script>
+</head>
+<body>
+    <form class="form-group">
+        <label>Name</label><br />
+        <input type="text" id ="getName"/><br />
+        <label>Birthday</label><br />
+        <input type="date" id ="getBday"/><br />
+        <input type="hidden" id ="getID"/>
+        <input type="hidden" id ="oldBday"/>
+    </form>
+    <button class="btn-primary btn-primary" onclick="editButtonClick()">Submit</button>
+
+
+<script src="~/js/Author/partialEdit.js"></script>
+
+</body>
+</html>

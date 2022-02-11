@@ -16,10 +16,8 @@ namespace Entity_Layer
 		public Authors bookAuthor { get; set; }
 		public string authorName { get; set; }
 
-		// public ICollection<Categories> categories { get; set; }
-
-		// public int categoryID { get; set; }
-		public String[] categoryNames { get; set; }
+		
+		public string categoryNames { get; set; }
 		public int[] categoryIDs { get; set; }
 	}
 }

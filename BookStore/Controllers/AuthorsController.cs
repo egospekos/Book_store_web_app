@@ -14,17 +14,17 @@ namespace BookStore.Controllers
 		{
 			connectionString = config.GetConnectionString("DefaultConnection");
 		}
-		// GET: AuthorsController
+		
 		public ActionResult Index()
 		{
 			
 			return View();
 		}
 
-		//[HttpPost]
+		
 		public List<Authors> GetAllAuthors()
 		{
-			//HttpRequest[];
+			
 			List<Authors> data;
 			using (IDbConnection db = getConnection())
 			{
@@ -53,7 +53,7 @@ namespace BookStore.Controllers
 		
 
 
-		// POST: AuthorsController/Create
+		
 		[HttpPost]
 		public ActionResult Create(Authors p)
 		{
@@ -73,7 +73,7 @@ namespace BookStore.Controllers
 		}
 
 
-		// POST: AuthorsController/Edit/5
+		
 		[HttpPost]
 		public ActionResult Edit(Authors p)
 		{

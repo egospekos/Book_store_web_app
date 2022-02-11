@@ -20,7 +20,7 @@ namespace BookStore.Controllers
 			IDbConnection db = new SqlConnection(connectionString);
 			return db;
 		}
-		// GET: ReportsController
+		
 		public ActionResult Index()
 		{
 

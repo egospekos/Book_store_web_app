@@ -14,7 +14,7 @@ namespace BookStore.Controllers
 		{
 			connectionString = config.GetConnectionString("DefaultConnection");
 		}
-		// GET: CategoryController
+		
 		public ActionResult Index()
 		{
 			List<Categories> categories;
@@ -83,7 +83,7 @@ namespace BookStore.Controllers
 		}
 
 		
-		// POST: CategoryController/Create
+		
 		[HttpPost]
 		public ActionResult Create(Categories c)
 		{
@@ -103,7 +103,7 @@ namespace BookStore.Controllers
 			}
 		}
 
-		// GET: CategoryController/Edit/5
+		
 		public ActionResult Edit(int id)
 		{
 			Categories c;
@@ -115,7 +115,7 @@ namespace BookStore.Controllers
 			return View(c);
 		}
 
-		// POST: CategoryController/Edit/5
+		
 		[HttpPost]
 		public ActionResult Edit(Categories c)
 		{
@@ -136,7 +136,7 @@ namespace BookStore.Controllers
 
 		
 
-		// POST: CategoryController/Delete/5
+		
 		[HttpPost]
 		public ActionResult Delete(int id)
 		{

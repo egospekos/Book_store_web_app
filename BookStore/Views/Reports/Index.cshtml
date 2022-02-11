@@ -4,8 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 <div class="div class="d-grid gap-2 col-12 mx-auto">
 
@@ -20,94 +29,8 @@
 
 </div>
 
+<script src="~/js/Report/main.js"></script>
+</body>
+</html>
 
   
-<script>
-    $(function(){
-        createCategoryChart();
-        createAuthorChart();
-    });
-
-
-    function createCategoryChart() {
-        $.ajax({
-            url: "/Reports/GetFirstChart"
-        }).done(function (data) {
-            console.log(data)
-            var categories = [];
-            var sums = [];
-            var colors = [];
-            for (var i = 0; i < data.length; i++) {
-                categories.push(data[i].categoryName);
-                sums.push(data[i].sumCategory);
-                colors.push('rgba('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+', 0.9)');
-            }
-            var catCanvas = document.getElementById('chartCategory');
-            var catChart = new Chart(catCanvas, {
-                type: 'bar',
-                
-                data: {
-                    labels: categories,
-                    datasets: [{
-                        label: 'Categories',
-                        data: sums,
-                        hoverOffset: 4,
-                        backgroundColor: colors
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    },
-                },
-            });
-        });
-    }
-
-
-    function createAuthorChart() {
-        $.ajax({
-            url: "/Reports/GetSecondChart"
-        }).done(function (data) {
-            console.log(data)
-            var authors = [];
-            var sums = [];
-            var colors = [];
-            for (var i = 0; i < data.length; i++) {
-                authors.push(data[i].authorName);
-                sums.push(data[i].countBook);
-                colors.push('rgba('+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+','+Math.floor(Math.random()*256)+', 0.9)');
-            }
-            var authorCanvas = document.getElementById('chartAuthor');
-            var authorChart = new Chart(authorCanvas, {
-                type: 'pie',
-                data: {
-                    labels: authors,
-                    datasets: [{
-                        label: 'Authors',
-                        data: sums,
-                        hoverOffset: 4,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    },
-                },
-            });
-        });
-    }
-
-
-</script>

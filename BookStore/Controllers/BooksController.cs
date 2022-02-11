@@ -16,7 +16,7 @@ namespace BookStore.Controllers
 		{
 			connectionString = config.GetConnectionString("DefaultConnection");
 		}
-		// GET: BookController
+		
 		public ActionResult Index()
 		{
 			
@@ -26,11 +26,7 @@ namespace BookStore.Controllers
 		[HttpPost]
 		public List<Books> GetAllBooks(Filter filter)
         {
-			//int max, min;
-			//if(filter.maxPrice!=null) max = int.Parse(filter.maxPrice);
-			//else max = -1;
-			//if (filter.minPrice != null) min = int.Parse(filter.minPrice);
-			//else min = -1;
+			
 
 			int? max, min;
 			if (filter.maxPrice != null) max = filter.maxPrice;
@@ -43,11 +39,13 @@ namespace BookStore.Controllers
 			List<Books> books;
 
 			var sql = @" SELECT DISTINCT b.[bookID],b.[bookName],b.[bookPages],b.[bookPrice],b.[bookAuthorID], a.[authorName], a.[authorID],
-						(select STUFF ((
-						SELECT ','+c.categoryName FROM BookCategories bc JOIN Categories c ON bc.categoryID = c.categoryID WHERE bc.bookID = b.bookID FOR XML PATH('')),1,1,'')) as categoryNames  
-						FROM [Books] b 
-						LEFT JOIN Authors a ON b.bookAuthorID = a.authorID 
-						LEFT JOIN BookCategories bcc ON bcc.bookID = b.bookID WHERE 1=1 ";
+						(select STUFF (
+							( SELECT ','+c.categoryName FROM BookCategories bc 
+							  JOIN Categories c ON bc.categoryID = c.categoryID 
+							  WHERE bc.bookID = b.bookID FOR XML PATH('')),1,1,'')
+						) as categoryNames 
+						FROM [Books] b LEFT JOIN Authors a ON b.bookAuthorID = a.authorID 
+					    LEFT JOIN BookCategories bcc ON bcc.bookID = b.bookID WHERE 1=1 ";
 			if (max != -1)
 			{
 				sql += " AND [bookPrice]<=@max ";
@@ -62,15 +60,12 @@ namespace BookStore.Controllers
 			}
 
 
-			//string firstTable = ApplyFilter(filter);
-			//string secondTable = "SELECT bookID, categoryNames = STUFF((SELECT ','+CONVERT(VARCHAR(6),categoryID) FROM BookCategories t1 WHERE t1.bookID = t2.bookID FOR XML PATH('')),1,1,'') FROM BookCategories t2 GROUP BY bookID";
-			//string fullQuery = "SELECT * FROM ("+firstTable+") tl JOIN ("+secondTable+") tr ON tl.bookID = tr.bookID";
+			
 			using (IDbConnection db = getConnection())
 			{
 
 				books = db.Query<Books>(sql, new {max= max, min=min,categories= categories }).ToList();
-				// connection.Execute(_query, new { catID = item, bookID = newID });
-				//newID = connection.Query<int>(addBookQuery,b).SingleOrDefault();
+				
 			}
 			return books;
 		}
@@ -160,7 +155,7 @@ namespace BookStore.Controllers
 		
 
 
-		// POST: BookController/Edit/5
+		
 		[HttpPost]
 		public void Edit(Books p)
 		{
@@ -194,7 +189,7 @@ namespace BookStore.Controllers
 		}
 
 
-		// GET: BookController/Delete/5
+		
 		public ActionResult Delete(int id)
 		{
 			string _categoryQuery = "DELETE FROM BookCategories WHERE bookID=" + id;
